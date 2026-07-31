@@ -26,6 +26,8 @@ def main():
     ap.add_argument("--no-llm", action="store_true", help="停用 Groq 摘要")
     ap.add_argument("--topic", action="append", help="只更新指定主題 id（可重複）")
     ap.add_argument("--keep-days", type=int, default=60, help="保留最近幾天的快照")
+    ap.add_argument("--resummarize", action="store_true",
+                    help="只重新產生今天已抓下來的新聞摘要，不重新連線抓取")
     args = ap.parse_args()
 
     active = topics_mod.enabled_topics()
@@ -45,6 +47,16 @@ def main():
 
     def progress(msg):
         print("  " + msg, flush=True)
+
+    if args.resummarize:
+        snap, n = pipeline.resummarize(active, use_llm=use_llm, progress=progress)
+        if not snap:
+            print("今天還沒有快照，請先執行一次正常更新。")
+            return 2
+        has = sum(1 for v in snap["topics"].values() for a in v if a.get("summary"))
+        print("-" * 60)
+        print(f"重新產生 {n} 則摘要（有摘要 {has} 則、僅標題 {n - has} 則）")
+        return 0
 
     snap = pipeline.run_update(active, days=args.days, limit=args.limit,
                                use_llm=use_llm, progress=progress)

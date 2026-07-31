@@ -11,7 +11,19 @@ import re
 MODEL = "llama-3.3-70b-versatile"
 
 
+SESSION_KEY = "groq_api_key"
+
+
 def get_api_key():
+    """金鑰來源優先序：使用者當場輸入 → 環境變數 → Streamlit secrets。"""
+    try:
+        import streamlit as st
+        typed = str(st.session_state.get(SESSION_KEY, "") or "").strip()
+        if typed:
+            return typed
+    except Exception:
+        pass
+
     key = os.environ.get("GROQ_API_KEY", "").strip()
     if key:
         return key
@@ -20,6 +32,35 @@ def get_api_key():
         return str(st.secrets.get("GROQ_API_KEY", "")).strip()
     except Exception:
         return ""
+
+
+def key_source():
+    """回傳金鑰來自哪裡，用於在畫面上說明。"""
+    try:
+        import streamlit as st
+        if str(st.session_state.get(SESSION_KEY, "") or "").strip():
+            return "session"
+    except Exception:
+        pass
+    if os.environ.get("GROQ_API_KEY", "").strip():
+        return "env"
+    try:
+        import streamlit as st
+        if str(st.secrets.get("GROQ_API_KEY", "")).strip():
+            return "secrets"
+    except Exception:
+        pass
+    return ""
+
+
+def test_key():
+    """實際打一次 API 確認金鑰有效，回傳 (成功?, 訊息)。"""
+    if not get_api_key():
+        return False, "尚未提供金鑰。"
+    data = chat_json("只回傳 JSON。", '請回傳 {"ok": true}', max_tokens=50)
+    if data is None:
+        return False, "呼叫失敗，請確認金鑰是否正確、或稍後再試。"
+    return True, f"金鑰有效，模型 {MODEL} 回應正常。"
 
 
 def available():

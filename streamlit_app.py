@@ -68,9 +68,10 @@ def _sidebar_status():
     with st.sidebar:
         st.divider()
         if llm.available():
-            st.caption("🟢 已設定 Groq 金鑰，摘要由 LLM 產生")
+            st.caption("🟢 摘要由 Groq LLM 產生")
         else:
-            st.caption("🟡 未設定 GROQ_API_KEY，改用擷取式摘要")
+            st.caption("🟡 未設定 Groq 金鑰，摘要為原文清理版　—　"
+                       "可到「⚙️ 更新與設定」啟用")
 
 
 # ── 主題管理 ────────────────────────────────────────────────────
@@ -261,6 +262,70 @@ def _backup_section(all_topics):
 
 
 # ── 更新與設定 ──────────────────────────────────────────────────
+_KEY_SOURCE_LABEL = {
+    "session": "你剛才在這一頁輸入的（只在這個瀏覽器分頁有效）",
+    "env": "環境變數 GROQ_API_KEY",
+    "secrets": "Streamlit Secrets",
+}
+
+
+def _summary_section():
+    """AI 摘要設定：金鑰、測試、只重新產生摘要。"""
+    st.subheader("✍️ AI 摘要")
+
+    src = llm.key_source()
+    if src:
+        st.success(f"已啟用 AI 摘要，模型 `{llm.MODEL}`　—　金鑰來源：{_KEY_SOURCE_LABEL[src]}")
+    else:
+        st.warning(
+            "目前沒有 Groq 金鑰，摘要是**清理後的原文前段**（不是 AI 寫的），"
+            "各主題的「今日重點」導讀也不會產生。"
+        )
+
+    with st.expander("🔑 設定 Groq 金鑰", expanded=not src):
+        st.markdown(
+            "Groq 免費申請：https://console.groq.com/keys\n\n"
+            "**三種設定方式，效果不同：**\n"
+            "1. **下方直接貼上** — 立刻可用，但只在目前這個瀏覽器分頁有效，關掉就沒了。適合先試用。\n"
+            "2. **Streamlit Secrets**（Manage app → Settings → Secrets）— "
+            "網站上按「立即更新」時會用到，重開也還在。\n"
+            "3. **GitHub Actions Secret**（repo → Settings → Secrets and variables → Actions）— "
+            "**每日排程要用這個**，只設 Streamlit 的話，每天自動抓的摘要還是原文前段。"
+        )
+        typed = st.text_input("Groq API Key", type="password",
+                              value=st.session_state.get(llm.SESSION_KEY, ""),
+                              placeholder="gsk_...")
+        c1, c2 = st.columns(2)
+        if c1.button("套用金鑰"):
+            st.session_state[llm.SESSION_KEY] = typed.strip()
+            st.rerun()
+        if c2.button("清除", disabled=not st.session_state.get(llm.SESSION_KEY)):
+            st.session_state[llm.SESSION_KEY] = ""
+            st.rerun()
+        if st.button("🧪 測試金鑰是否有效"):
+            with st.spinner("呼叫 Groq…"):
+                ok, msg = llm.test_key()
+            (st.success if ok else st.error)(msg)
+
+    st.caption(
+        "重新產生摘要不會重新連線抓新聞，只是把已經抓下來的內容重新寫一次摘要，"
+        "設定金鑰後用這個最快。"
+    )
+    active = topics_mod.enabled_topics()
+    if st.button("✍️ 重新產生今天的摘要", type="primary" if src else "secondary",
+                 disabled=not active):
+        box = st.empty()
+        with st.spinner("產生中…"):
+            snap, n = pipeline.resummarize(
+                active, use_llm=llm.available(), progress=lambda m: box.caption(m))
+        box.empty()
+        if not snap:
+            st.error("今天還沒有抓到任何新聞，請先按下方的「立即更新」。")
+        else:
+            how = "AI 摘要" if src else "原文清理"
+            st.success(f"已重新產生 {n} 則摘要（{how}）。")
+
+
 def update_page():
     st.title("⚙️ 更新與設定")
 
@@ -269,14 +334,8 @@ def update_page():
     c1, c2 = st.columns(2)
     c1.metric("已累積天數", len(dates))
     c2.metric("最新資料", dates[0] if dates else "—")
-    if llm.available():
-        st.success(f"Groq 金鑰已設定，摘要模型：`{llm.MODEL}`")
-    else:
-        st.warning(
-            "未偵測到 `GROQ_API_KEY`。網站仍可運作，但摘要會退回「擷取原文前段」模式。\n\n"
-            "設定方式：Streamlit Cloud → App settings → Secrets 加入 "
-            "`GROQ_API_KEY = \"gsk_...\"`（Groq 免費申請）。"
-        )
+    st.divider()
+    _summary_section()
 
     st.divider()
     st.subheader("手動更新")

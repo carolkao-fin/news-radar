@@ -1,6 +1,6 @@
 {
   "date": "2026-08-01",
-  "generated_at": "2026-08-01T01:15:23+08:00",
+  "generated_at": "2026-08-01T01:30:25+08:00",
   "meta": {
     "briefs": {},
     "counts": {
@@ -35,7 +35,7 @@
         "published_display": "2026-07-31 15:00",
         "raw_summary": "Commission starts enforcing AI Act rules and new transparency requirements on 2 August Anonymous (not verified) Fri, 07/31/2026 - 09:00 From 2 August 2026, the European Commission’s AI Office, together with national authorities, will begin enforcing the Artificial Intelligence (AI) Act. On the same date, new transparency rules will start to apply, requiring certain AI systems to tell users when they are interacting with AI and when content has been generated or altered by it. Under the new rules, chatbots and other interactive AI systems will have to tell users they are dealing with AI, not a human. Deepfakes (images, videos, or audio that have been edited or generated using AI) will have to be labelled. AI-generated or altered content will also have to carry machine-readable marks so it can be detected more easily. The measures are intended to reduce deception and manipulation and help people make informed choices. They also give businesses clearer obligations and a practical way to show compliance. The Commission published a first list of more than 180 organisations that have signed the Code of Practice on transparency of AI-generated content that operationalises the rules on transparency of AI-generated content. Read the full press release . Read more about the Enforcement of the AI Act and the: AI Act complaints tool AI Act Whistleblower Tool Complaints channel for downstream providers using general-purpose AI models Find more information about: Guidelines on Transparency",
         "lang": "en",
-        "summary": "Commission starts enforcing AI Act rules and new transparency requirements on 2 August Anonymous (not verified) Fri, 07/31/2026 - 09:00 From…",
+        "summary": "From 2 August 2026, the European Commission’s AI Office, together with national authorities, will begin enforcing the Artificial Intelligence (AI) Act.",
         "bullets": [],
         "score": 7,
         "summary_by": "extract"
@@ -53,7 +53,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.28505v1 Announce Type: new Abstract: The rise of generative artificial intelligence (GenAI) in academic writing and publishing (AWP) raises questions about linguistic inclusivity and the legitimacy of diverse Englishes in global scholarly communication. This article responds to these questions through a structured scholarly dialogue involving five sociolinguists from World Englishes and adjacent fields. Organised around five guiding questions, the dialogue interrogates how GenAI tools influence writing practices, reinforce or disrupt dominant language norms, and raise ethical challenges. Contributors reflect on the potential of GenAI to democratise writing processes while also raising concerns about GenAI's tendency to marginalise minoritised varieties and flatten nuance in scholarly writing. Across the dialogue, themes of linguistic (in)justice, researcher agency, and institutional responsibility emerge, with contributors calling for equity-informed policies, critical AI literacy, and inclusive co-design in GenAI development. The article shows the value of dialogic reflection in understanding GenAI's role in AWP. It concludes that while GenAI may reinforce existing hierarchies, it can also serve as a site of resistance, depending on how it is designed, governed and used within scholarly communities committed to linguistic diversity.",
         "lang": "en",
-        "summary": "arXiv:2607.28505v1 Announce Type: new Abstract: The rise of generative artificial intelligence (GenAI) in academic writing and publishing (A…",
+        "summary": "The rise of generative artificial intelligence (GenAI) in academic writing and publishing (AWP) raises questions about linguistic inclusivity and the legitimacy…",
         "bullets": [],
         "score": 7,
         "summary_by": "extract"
@@ -71,7 +71,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.26062v1 Announce Type: cross Abstract: Background: This work investigates the presence of implicit bias in Large Language Model (LLM)-based chat AI models directed toward people with intellectual disabilities (ID). Objective: The study aims to identify and measure representational differences related to people with ID and examine them to identify implicit biases inherent in AI chat generation technologies. Methods: Utilizing the GPT-4-Turbo model, we requested story-generation based on 10 prompt stems with and without descriptors for ID. This process was repeated using four other LLMs (OpenAI GPT-4o, Meta Llama-3-3-70B-Instruct, Anthropic Claude-3-5-Sonnet, and Mistral-Large-2411). The resulting 25,000 computer-generated stories were analyzed using a separate GPT-4-Turbo model instance to detect differences in how people are represented related to themes of bias described in previous literature. Results: Our findings reveal differences in how people are represented between story datasets with and without ID descriptors. These differences go beyond established characteristics of ID and imply the presence of mostly negative implicit biases. Identified differences related to considering people with ID as younger, with themes of paternalism and infantilization; depicting them as more inspirational and symbolic; as needing help more often, being dependent, and being saved; and having a negative perception of them and more hesitation to include them. Conclusions: These i",
         "lang": "en",
-        "summary": "arXiv:2607.26062v1 Announce Type: cross Abstract: Background: This work investigates the presence of implicit bias in Large Language Model (…",
+        "summary": "Background: This work investigates the presence of implicit bias in Large Language Model (LLM)-based chat AI models directed toward people with intellectual dis…",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -89,7 +89,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.26201v1 Announce Type: cross Abstract: Security operations centers rely on anomaly detection systems to flag suspicious events. Feature-level explanations for anomaly detectors offer limited value for operational investigations. To effectively handle alerts, analysts need to know contextual relationships and need actionable understanding of the entities involved. This paper introduces an event-centric detector-agnostic approach for explaining cybersecurity alerts in small- to medium-sized enterprise networks. We present (EC)2, a multi-agent framework that performs structured, hypothesis-driven investigation to provide explanations grounded in verifiable evidence. Evaluation results show that the proposed framework improves post-detection analysis by generating operationally meaningful explanations, which also enhance event classification accuracy.",
         "lang": "en",
-        "summary": "arXiv:2607.26201v1 Announce Type: cross Abstract: Security operations centers rely on anomaly detection systems to flag suspicious events.",
+        "summary": "Security operations centers rely on anomaly detection systems to flag suspicious events.",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -107,7 +107,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.26348v1 Announce Type: cross Abstract: Large language models (LLMs) are increasingly used as synthetic users, stand-ins for human respondents whose simulated answers feed product, policy, and market decisions. We ask when this substitution is valid and when it fails, and package the answer as an evaluation framework for intelligent synthetic-user systems. A single protocol, run across four models spanning two families and an 8B-to-frontier capability range, is applied to two independent domains of real human-response data: U.S. general social attitudes (General Social Survey) and cross-cultural values (World Values Survey). Every model is benchmarked against a suite of non-LLM baselines fit on held-out human data. Under demographic prompting and the survey-simulation protocols we test, two failures replicate across both domains, all four models, and both families. First, at the individual level no LLM beats even the strongest baseline; on cross-cultural values every model falls well below it, and the gap survives distance-aware and proper scoring. Second, models systematically over-determine demographics, treating identity as far more predictive of attitudes than it is among real people, a distortion present for nearly every question-group combination and robust to a coding-invariant measure. Neither failure is remedied by a larger, more capable model. A decision-impact analysis shows why this matters in practice: on a segment-targeting task the models inflate betw",
         "lang": "en",
-        "summary": "arXiv:2607.26348v1 Announce Type: cross Abstract: Large language models (LLMs) are increasingly used as synthetic users, stand-ins for human…",
+        "summary": "Large language models (LLMs) are increasingly used as synthetic users, stand-ins for human respondents whose simulated answers feed product, policy, and market…",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -125,7 +125,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.27611v1 Announce Type: new Abstract: Corporate annual reports contain weakly structured evidence about foreign-exchange risk management, derivative use, natural hedging, and explicit non-use. This study develops AWARE-FX, an auditable AI/NLP decision-support system that converts report text into traceable firm-year hedging-disclosure measures. The system combines a professional-source lexicon, negation and accounting-status logic, channel-specific financial encoders, exact evidence gates, conservative aggregation, and an audit ledger. Across 24,909 Hong Kong firm-years from 2008-2025, it retrieves and scores 543,527 snippets. Reliability is evaluated through ablations, a stratified 300-snippet human audit, three-seed FinBERT-ModernBERT comparisons, strict 2023-2025 temporal tests, probability calibration, selective prediction, and fixed-prompt generative-model benchmarks. FinBERT has the higher mean F1 in seven of eight encoder task-split comparisons; its temporal F1 ranges from 0.702 to 0.872. Abstaining on the 20% least-confident temporal observations raises retained-sample F1 by 0.050-0.077. Deterministic Qwen3-8B performs strongly on commodity and negation evidence but poorly on foreign-debt and accounting-context labels, showing that a general-purpose LLM does not uniformly replace domain constraints. The strict FX score is negatively associated with linked baseline and stress-period FX exposure, whereas the generic broad score is not. These associations provi",
         "lang": "en",
-        "summary": "arXiv:2607.27611v1 Announce Type: new Abstract: Corporate annual reports contain weakly structured evidence about foreign-exchange risk mana…",
+        "summary": "Corporate annual reports contain weakly structured evidence about foreign-exchange risk management, derivative use, natural hedging, and explicit non-use.",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -143,7 +143,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "arXiv:2607.28528v1 Announce Type: new Abstract: The rapid growth of large language models (LLMs) has resurrected age-old questions in sociolinguistics and world Englishes, such as who decides what counts as legitimate English, whose English is suspect etc. This paper examines how AI systems, their uses and discourse on them reflect, reinforce, and occasionally challenge (standard) language ideologies, which privilege Inner Circle norms and marginalize non-dominant Englishes. Drawing on evidence from empirical studies, media commentary, social media debates, and examples from AI outputs, the paper shows that AI technologies reproduce dominant language ideologies at different levels: training data, design protocols, evaluation benchmarks, user feedback and public commentary. The analysis uses the public controversy over AI-sounding language, especially the fixation on the word delve, to illustrate how speakers of English from the Global North police the English language norms of Global South English users. The paper also identifies what Christian Mair has called a \"standardisation paradox\": AI may homogenize English by privileging standard forms and at the same time pluralize Englishes through exposure to wide-ranging corpora and annotation work carried out by Global South users. In doing so, the paper argues that generative AI is reigniting long-standing debates in World Englishes about standardization, legitimacy, and the ownership of English, now playing out in algorithmic s",
         "lang": "en",
-        "summary": "arXiv:2607.28528v1 Announce Type: new Abstract: The rapid growth of large language models (LLMs) has resurrected age-old questions in sociol…",
+        "summary": "The rapid growth of large language models (LLMs) has resurrected age-old questions in sociolinguistics and world Englishes, such as who decides what counts as l…",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -197,7 +197,7 @@
         "published_display": "2026-07-31 15:00",
         "raw_summary": "See how Univé built an AI-ready workforce with ChatGPT Enterprise by combining leadership, responsible governance, and employee-led innovation to transform work at scale.",
         "lang": "en",
-        "summary": "See how Univé built an AI-ready workforce with ChatGPT Enterprise by combining leadership, responsible governance, and employee-led innovati…",
+        "summary": "See how Univé built an AI-ready workforce with ChatGPT Enterprise by combining leadership, responsible governance, and employee-led innovation to transform work…",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -215,7 +215,7 @@
         "published_display": "2026-07-30 17:50",
         "raw_summary": "EU launches AI Gigafactories call to boost Europe's computing capacity and unlock more than €30 billion in investment Anonymous (not verified) Thu, 07/30/2026 - 11:50 The EU has launched a call for tenders to establish up to seven AI Gigafactories across Europe, as part of its latest major push to accelerate Europe's technological sovereignty and ambition of becoming the AI Continent. AdobeStock © Tikka MS Led by industry and supported by up to €10 billion in EU and national funding, the initiative is expected to unlock at least €20 billion in private investment across the Union. It will expand Europe's AI computing capacity and give start-ups, scale-ups, small and medium-sized enterprises, industry, academia and public authorities access to infrastructure for training, inference and fine-tuning advanced frontier AI models. The AI Gigafactories will combine advanced AI processors, software and cloud technology stacks, high-speed connectivity and energy-efficient data centres. Together with Europe's network of 19 AI Factories, they will strengthen Europe's technological leadership, resilience and strategic autonomy. The initiative will ensure that Europe can develop advanced AI on its own infrastructure, in line with EU rules and values. AI technologies developed in the AI Gigafactories will follow EU standards on data protection, safety, security and ethics. Read the full press release . Find more information: Strengthening Europe's Tech Sovereignty AI Continent Action Plan E",
         "lang": "en",
-        "summary": "EU launches AI Gigafactories call to boost Europe's computing capacity and unlock more than €30 billion in investment Anonymous (not verifie…",
+        "summary": "The EU has launched a call for tenders to establish up to seven AI Gigafactories across Europe, as part of its latest major push to accelerate Europe's technolo…",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -251,7 +251,7 @@
         "published_display": "2026-07-28 21:00",
         "raw_summary": "Illustration of a black magnifying glass in a white circle on green grass surrounded by items related to fun activities like tennis and games",
         "lang": "en",
-        "summary": "Illustration of a black magnifying glass in a white circle on green grass surrounded by items related to fun activities like tennis and game…",
+        "summary": "Illustration of a black magnifying glass in a white circle on green grass surrounded by items related to fun activities like tennis and games",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -269,7 +269,7 @@
         "published_display": "2026-07-31 15:00",
         "raw_summary": "EU support for the news media sector anserge Fri, 07/31/2026 - 09:00 The European Commission works to address structural challenges in media sectors and to promote a free, diverse and pluralistic media environment. image by Laurence Dutton by Getty/iStock The Commission aims to support projects that promote a free, diverse and pluralistic media environment, address structural challenges of the media sectors and/or improve citizens' access to quality information. Examples include supporting collaborative journalism, monitoring risks to media pluralism, mapping violations of media freedom, defending journalists under threat, supporting media literacy and strengthening the European public sphere. In short, the European Union supports the news media sector primarily through several instruments: The ‘Multimedia Actions’ line to fund independent news media coverage of EU affairs. Actions under its Creative Europe programme to support media pluralism and freedom, media collaborations and media literacy. Actions part of innovation programmes ( Digital Europe, Horizon Europe ). And Pilot Projects and Preparatory Actions proposed by the European Parliament on an annual basis. The available budget amounts to approximately €50 million per year. The News Infosheet (updated July 2026) Subscribe to the latest news on this topic and more See also Stay tuned for EU calls for the media sector Related topics Media and democracy Media freedom and pluralism Media Freedom and Pluralism Pilot proje",
         "lang": "en",
-        "summary": "EU support for the news media sector anserge Fri, 07/31/2026 - 09:00 The European Commission works to address structural challenges in media…",
+        "summary": "The European Commission works to address structural challenges in media sectors and to promote a free, diverse and pluralistic media environment.",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -341,7 +341,7 @@
         "published_display": "2026-07-31 18:05",
         "raw_summary": "Meta 加速以合資與專案融資擴張人工智慧基礎設施，最新動態是與貝萊德（BlackRock）成立總規模約 14 […]",
         "lang": "zh",
-        "summary": "Meta 加速以合資與專案融資擴張人工智慧基礎設施，最新動態是與貝萊德（BlackRock）成立總規模約 14 […]",
+        "summary": "Meta 加速以合資與專案融資擴張人工智慧基礎設施，最新動態是與貝萊德（BlackRock）成立總規模約 14",
         "bullets": [],
         "score": 7,
         "summary_by": "extract"
@@ -377,7 +377,7 @@
         "published_display": "2026-07-31 12:30",
         "raw_summary": "綜合中媒引用彭博社報導，據知情人士指出，中國 AI 新創公司 DeepSeek（深度求索，簡稱 DS）正擴大 […]",
         "lang": "zh",
-        "summary": "綜合中媒引用彭博社報導，據知情人士指出，中國 AI 新創公司 DeepSeek（深度求索，簡稱 DS）正擴大 […]",
+        "summary": "綜合中媒引用彭博社報導，據知情人士指出，中國 AI 新創公司 DeepSeek（深度求索，簡稱 DS）正擴大",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -395,7 +395,7 @@
         "published_display": "2026-07-28 22:47",
         "raw_summary": "Anthropic CEO Backs Open-Weight AI While Calling for Chip Export Curbs to China HOKANEWS.COM",
         "lang": "en",
-        "summary": "Anthropic CEO Backs Open-Weight AI While Calling for Chip Export Curbs to China HOKANEWS.COM",
+        "summary": "",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -413,7 +413,7 @@
         "published_display": "2026-07-28 14:00",
         "raw_summary": "AI伺服器戰點燃「鋼骨」大戰：從Nvidia、Meta到Rambus，資料中心資本支出失控？ CMoney投資網誌",
         "lang": "zh",
-        "summary": "AI伺服器戰點燃「鋼骨」大戰：從Nvidia、Meta到Rambus，資料中心資本支出失控？ CMoney投資網誌",
+        "summary": "",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -449,7 +449,7 @@
         "published_display": "2026-07-27 18:00",
         "raw_summary": "The AI Act’s Transparency Obligations: Rules, Scope and Timeline Stibbe",
         "lang": "en",
-        "summary": "The AI Act’s Transparency Obligations: Rules, Scope and Timeline Stibbe",
+        "summary": "",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -467,7 +467,7 @@
         "published_display": "2026-07-31 18:30",
         "raw_summary": "人工智慧（AI）熱潮延燒，引領台灣經濟數據締造佳績。主計總處今天公布第二季經濟成長概估統計為 12.92%，為 […]",
         "lang": "zh",
-        "summary": "人工智慧（AI）熱潮延燒，引領台灣經濟數據締造佳績。主計總處今天公布第二季經濟成長概估統計為 12.92%，為 […]",
+        "summary": "人工智慧（AI）熱潮延燒，引領台灣經濟數據締造佳績。主計總處今天公布第二季經濟成長概估統計為 12.92%，為",
         "bullets": [],
         "score": 5,
         "summary_by": "extract"
@@ -487,7 +487,7 @@
         "published_display": "2026-07-28 12:02",
         "raw_summary": "財政部 公告 發文日期：中華民國115年7月28日 發文字號：台財關字第1151016203號 附件：如公告事項一 主旨：公告116年度世界貿易組織（WTO）會員生產之鹿茸、東方梨及香蕉適用關稅配額輸入事宜。 依據：關稅配額實施辦法第5條。 公告事項： 一、116年度WTO會員生產之鹿茸、東方梨及香蕉適用關稅配額輸入，其配額數量及相關事項如下： （一）配額貨品名稱與數量、分配（進口）期間、申請期間及公告核配日期：如附表。 （二）分配方式：採事先核配方式，按進口實績及先申請先分配2種方法分配，114年、115年具有進口實績之個別申請人，獲配之配額將至少為該2年實際進口數量之平均數，賸餘數量依先申請先分配辦理。 （三）核配方法： １、採進口實績者：按114年、115年每一申請者實際進口配額數量之平均數辦理核配。 ２、採先申請先分配者：按郵寄日期先後，逐日核配。 （１）當日申請案件之總申請數量，如未超過可分配配額總量，按申請數量全數核配。 （２）當日總申請數量如超過可分配配額總量，申請家數未超過依最低申配數量可分配之家數，按申請量比率分配。 （３）當日總申請數量如超過可分配配額總量，申請家數超過依最低申配數量可分配之家數，採公開抽籤，依「最高可分配家數」核配，每家一律以「最低申配數量」分配。 （四）申請數量：採先申請先分配方式申請者，其申請數量不得高於「最高申配數量」及低於「最低申配數量」。 （五）參與分配資格： １、採進口實績者：向經濟部國際貿易署登記有案之出進口廠商，且具有所申請配額114年、115年進口實績者。 ２、採先申請先分配者：向經濟部國際貿易署登記有案之出進口廠商。 （六）履約保證金：採進口實績及先申請先分配之獲配者，履約保證金應於116年6月1日前繳交，又採114年、115年進口實績申請核配者，若涉海關無法於116年6月1日前核定之疑義案件，履約保證金至遲應於116年8月25日前繳交。關稅配額證明書有效期限內全數進口者可向臺灣銀行股份有限公司申請發還；未進口餘量未達關稅配額證明書所載數量之4%者，得視為全數進口。 （七）其他相關事項：依關稅配額實施辦法規定辦理。 二、關稅配額證明書之核發，由臺灣銀行股份有限公司辦理，請於本部公告後密切注意該公司公告之相關申請程序及注意事項。 三、貨品進口時應符合我國相關檢疫（驗）及進口規定，請依衛生福利部、農業部及經濟部等機關之公告與規定辦理。 四、中國大陸生產屬關稅配額之貨品是否准予開放進口，以經濟部公告之輸入規定為準。 部 長 莊 翠 雲",
         "lang": "zh",
-        "summary": "財政部 公告 發文日期：中華民國115年7月28日 發文字號：台財關字第1151016203號 附件：如公告事項一 主旨：公告116年度世界貿易組織（WTO）會員生產之鹿茸、東方梨及香蕉適用關稅配額輸入事宜。 依據：關稅配額實施辦法第5條。",
+        "summary": "主旨：公告116年度世界貿易組織（WTO）會員生產之鹿茸、東方梨及香蕉適用關稅配額輸入事宜。 依據：關稅配額實施辦法第5條。 公告事項： 一、116年度WTO會員生產之鹿茸、東方梨及香蕉適用關稅配額輸入，其配額數量及相關事項如下： （一）配額貨品名稱與數量、分配（進口）期間、申請期間及公告核配日期：如附表。",
         "bullets": [],
         "score": 8,
         "summary_by": "extract"
@@ -505,7 +505,7 @@
         "published_display": "2026-07-28 12:00",
         "raw_summary": "",
         "lang": "en",
-        "summary": "Actions by the United States in the Investigations Under Section 301 of the Trade Act of 1974 of the Acts, Policies, and Practices of 60 Economies Related to the Failure of Each Economy To Impose and Effectively Enforce a Prohibition on the Importation of Goods Produced With Forced Labor",
+        "summary": "",
         "bullets": [],
         "score": 8,
         "summary_by": "extract"
@@ -523,7 +523,7 @@
         "published_display": "2026-07-28 12:00",
         "raw_summary": "The United States Trade Representative (Trade Representative) has determined under Section 301(b) and Section 304(a) of the Trade Act of 1974, as amended (Trade Act), that in each of 60 investigations, certain of the acts, policies, and practices of the economy at issue are actionable and that action by the United States is appropriate. In accordance with the specific direction of the President, the Trade Representative is taking actions in each of these investigations by imposing tariffs on all products of the investigated economy, with certain exemptions as provided in Annexes I and II to this notice (Notice). Consistent with the specific direction of the President, for an economy that imposes a forced labor import prohibition, has committed to impose and enforce such a prohibition through an Agreement on Reciprocal Trade (ART), or has imposed a partial regime with the effect of preventing the importation of certain forced labor goods, the Trade Representative has determined 10 percent is the appropriate rate of Section 301 duties, with specific economies subject to a 10 percent rate net of a product's most-favored-nation (MFN) duty. For every other economy, and in accordance with the specific direction of the President, the Trade Representative has determined 12.5 percent is the appropriate rate of Section 301 duty, with specific economies subject to a 12.5 percent rate net of a product's MFN duty. The Trade Representative has also determined, consistent with the specific ",
         "lang": "en",
-        "summary": "The United States Trade Representative (Trade Representative) has determined under Section 301(b) and Section 304(a) of the Trade Act of 197…",
+        "summary": "The United States Trade Representative (Trade Representative) has determined under Section 301(b) and Section 304(a) of the Trade Act of 1974, as amended (Trade…",
         "bullets": [],
         "score": 8,
         "summary_by": "extract"
@@ -559,7 +559,7 @@
         "published_display": "2026-07-30 08:00",
         "raw_summary": "Brazil has requested WTO dispute consultations with the United States regarding additional US duties on products originating in Brazil as a result of two investigations by the United States under Section 301 of the US Trade Act of 1974. Brazil said the additional duties are above the duties otherwise applicable under the US harmonized tariff schedule. The request was circulated to WTO members on 30 July.",
         "lang": "en",
-        "summary": "Brazil has requested WTO dispute consultations with the United States regarding additional US duties on products originating in Brazil as a …",
+        "summary": "Brazil has requested WTO dispute consultations with the United States regarding additional US duties on products originating in Brazil as a result of two invest…",
         "bullets": [],
         "score": 5,
         "summary_by": "extract"
@@ -595,7 +595,7 @@
         "published_display": "2026-07-28 16:05",
         "raw_summary": "為配合關稅法第二十五條第二項及第三項有關保稅運貨工具應裝置即時追蹤系統之規定，財政部關務署擬具「海關管理保稅運貨工具辦法」修正草案，依規定辦理預告程序。 本次修正重點為增訂「全時監管保稅卡車」相關規範，明定其為載運特定海關監管貨物且經海關核准裝置即時追蹤系統之保稅運貨工具，並載明申請登記全時監管保稅卡車應備文件、記載事項及所有人資格條件；其次新增即時追蹤系統之定義、組成及裝置規格，敘明車機及車機封條之功能及加封、解封等作業程序，以利實務運作。 關務署表示，為鼓勵保稅卡車裝置即時追蹤系統登記為全時監管保稅卡車，本次修正調整保證金機制及相關配套措施，符合條件者保證金減半，同時規範不再使用即時追蹤系統時之補繳機制及後續處理事項。 本案已於115.6.22預告，相關內容登載於公共政策網路參與平臺，預告期間（115.6.22－115.8.21）歡迎各界不吝指教及建議。 新聞稿聯絡人：柳科長 聯絡電話：02－25505500分機2946",
         "lang": "zh",
-        "summary": "為配合關稅法第二十五條第二項及第三項有關保稅運貨工具應裝置即時追蹤系統之規定，財政部關務署擬具「海關管理保稅運貨工具辦法」修正草案，依規定辦理預告程序。",
+        "summary": "為配合關稅法第二十五條第二項及第三項有關保稅運貨工具應裝置即時追蹤系統之規定，財政部關務署擬具「海關管理保稅運貨工具辦法」修正草案，依規定辦理預告程序。 本次修正重點為增訂「全時監管保稅卡車」相關規範，明定其為載運特定海關監管貨物且經海關核准裝置即時追蹤系統之保稅運貨工具，並載明申請登記全時監管保稅卡車應備文件、記載事…",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -613,7 +613,7 @@
         "published_display": "2026-07-31 12:00",
         "raw_summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of truck bed covers from the People's Republic of China (China). The period of investigation (POI) is January 1, 2025, through December 31, 2025. Interested parties are invited to comment on this preliminary determination.",
         "lang": "en",
-        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and expor…",
+        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of truck bed co…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -649,7 +649,7 @@
         "published_display": "2026-07-28 15:23",
         "raw_summary": "Today, the European Union submitted three papers to the World Trade Organization (WTO) on how to reform its work, in support of the new phase of the WTO reform process as discussions among members become more substantive.",
         "lang": "en",
-        "summary": "Today, the European Union submitted three papers to the World Trade Organization (WTO) on how to reform its work, in support of the new phas…",
+        "summary": "Today, the European Union submitted three papers to the World Trade Organization (WTO) on how to reform its work, in support of the new phase of the WTO reform…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -667,7 +667,7 @@
         "published_display": "2026-07-28 15:23",
         "raw_summary": "To respond to growing imbalances in global trade, the European Commission is upgrading its import monitoring toolbox by reconfiguring its ‘import barometer’, which gathers up-to-date import data and was originally established in 2025.",
         "lang": "en",
-        "summary": "To respond to growing imbalances in global trade, the European Commission is upgrading its import monitoring toolbox by reconfiguring its ‘i…",
+        "summary": "To respond to growing imbalances in global trade, the European Commission is upgrading its import monitoring toolbox by reconfiguring its ‘import barometer’, wh…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -685,7 +685,7 @@
         "published_display": "2026-07-28 08:00",
         "raw_summary": "Lithuania is contributing EUR 30,000 (approximately CHF 28,000) in 2026 to finance training programmes for government officials from developing economies, including least-developed countries (LDCs). This contribution to the WTO Global Trust Fund will support these economies in deepening their expertise on WTO issues and help them participate more effectively in the rules-based multilateral trading system.",
         "lang": "en",
-        "summary": "Lithuania is contributing EUR 30,000 (approximately CHF 28,000) in 2026 to finance training programmes for government officials from develop…",
+        "summary": "Lithuania is contributing EUR 30,000 (approximately CHF 28,000) in 2026 to finance training programmes for government officials from developing economies, inclu…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -703,7 +703,7 @@
         "published_display": "2026-07-31 08:00",
         "raw_summary": "World merchandise trade growth exceeded expectations in the first quarter of 2026 as surging trade in electronic components related to artificial intelligence (AI) offset the negative impact of the conflict in the Middle East, which began in the final month of the quarter. Trade disruptions in the Strait of Hormuz are expected to be more fully captured in trade data for the next quarter.",
         "lang": "en",
-        "summary": "World merchandise trade growth exceeded expectations in the first quarter of 2026 as surging trade in electronic components related to artif…",
+        "summary": "World merchandise trade growth exceeded expectations in the first quarter of 2026 as surging trade in electronic components related to artificial intelligence (…",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -721,7 +721,7 @@
         "published_display": "2026-07-29 11:25",
         "raw_summary": "New Section 301 tariffs demonstrate rededication to U.S. trade policy Winston Taylor",
         "lang": "en",
-        "summary": "New Section 301 tariffs demonstrate rededication to U.S. trade policy Winston Taylor",
+        "summary": "",
         "bullets": [],
         "score": 8,
         "summary_by": "extract"
@@ -739,7 +739,7 @@
         "published_display": "2026-07-27 21:32",
         "raw_summary": "Trump Administration’s New Section 301 Tariffs Reach Nearly All U.S. Imports Ward and Smith, P.A.",
         "lang": "en",
-        "summary": "Trump Administration’s New Section 301 Tariffs Reach Nearly All U.S. Imports Ward and Smith, P.A.",
+        "summary": "",
         "bullets": [],
         "score": 8,
         "summary_by": "extract"
@@ -757,7 +757,7 @@
         "published_display": "2026-07-31 08:49",
         "raw_summary": "Trump administration reaches trade deal to lower Taiwan’s tariff barriers News On AIR",
         "lang": "en",
-        "summary": "Trump administration reaches trade deal to lower Taiwan’s tariff barriers News On AIR",
+        "summary": "",
         "bullets": [],
         "score": 6,
         "summary_by": "extract"
@@ -775,7 +775,7 @@
         "published_display": "時間未提供",
         "raw_summary": "",
         "lang": "en",
-        "summary": "ASEAN still implementing parts of US trade deals, business chief says",
+        "summary": "",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -793,7 +793,7 @@
         "published_display": "2026-07-31 16:04",
         "raw_summary": "內文連結",
         "lang": "zh",
-        "summary": "內文連結",
+        "summary": "",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -811,7 +811,7 @@
         "published_display": "2026-07-31 14:05",
         "raw_summary": "全球 AI 晶片的競爭已經超越單純的架構與算力比拼，悄然下沉至供應鏈深處一場關於「稀缺產能」的隱秘戰爭。 從晶圓代工、HBM、先進封裝到硅光材料，未來三到五年的核心產能正被重量級企業以預付款、長約 (LTA) 甚至股權投資的形式大規模鎖定，這不僅標誌著傳統買賣關係的終結，更預示著半導體產業權力格局",
         "lang": "zh",
-        "summary": "全球 AI 晶片的競爭已經超越單純的架構與算力比拼，悄然下沉至供應鏈深處一場關於「稀缺產能」的隱秘戰爭。 從晶圓代工、HBM、先進封裝到硅光材料，未來三到五年的核心產能正被重量級企業以預付款、長約 (LTA) 甚至股權投資的形式大規模鎖定，這不僅標誌著傳統買賣關係的終結，更預示著…",
+        "summary": "全球 AI 晶片的競爭已經超越單純的架構與算力比拼，悄然下沉至供應鏈深處一場關於「稀缺產能」的隱秘戰爭。 從晶圓代工、HBM、先進封裝到硅光材料，未來三到五年的核心產能正被重量級企業以預付款、長約 (LTA) 甚至股權投資的形式大規模鎖定，這不僅標誌著傳統買賣關係的終結，更預示著半導體產業權力格局",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -829,7 +829,7 @@
         "published_display": "時間未提供",
         "raw_summary": "",
         "lang": "en",
-        "summary": "Quake damage at Japan auto parts maker ripples through massive supply chain",
+        "summary": "",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -847,7 +847,7 @@
         "published_display": "2026-07-30 12:00",
         "raw_summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel concrete reinforcing bar (rebar) from Egypt during the period of investigation (POI), January 1, 2024, through December 31, 2024.",
         "lang": "en",
-        "summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel …",
+        "summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel concrete reinforcing…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -865,7 +865,7 @@
         "published_display": "2026-07-30 12:00",
         "raw_summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel concrete reinforcing bar (rebar) from the Socialist Republic of Vietnam (Vietnam) during the period of investigation (POI), January 1, 2024, through December 31, 2024.",
         "lang": "en",
-        "summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel …",
+        "summary": "The U.S. Department of Commerce (Commerce) determines that countervailable subsidies are being provided to producers and exporters of steel concrete reinforcing…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -883,7 +883,7 @@
         "published_display": "2026-07-30 12:00",
         "raw_summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of large diameter graphite electrodes (large graphite electrodes) from the People's Republic of China (China). The period of investigation is January 1, 2025, through December 31, 2025. Interested parties are invited to comment on this preliminary determination.",
         "lang": "en",
-        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and expor…",
+        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of large diamet…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -901,7 +901,7 @@
         "published_display": "2026-07-30 12:00",
         "raw_summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of large diameter graphite electrodes (large graphite electrodes) from India. The period of investigation is January 1, 2025, through December 31, 2025. Interested parties are invited to comment on this preliminary determination.",
         "lang": "en",
-        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and expor…",
+        "summary": "The U.S. Department of Commerce (Commerce) preliminarily determines that countervailable subsidies are being provided to producers and exporters of large diamet…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -919,7 +919,7 @@
         "published_display": "2026-07-29 12:00",
         "raw_summary": "On May 15, 2026, the International Trade Administration published a Notice titled \"Amending the Procedures To Administer Import Adjustment Offset Amounts for Certain Imports of Automobile Parts Under Proclamation 10908 to Include Medium- and Heavy-Duty Vehicle Parts\" (May 15 Notice), which established amended procedures for automobile and medium- and heavy-duty vehicle (MHDV) manufacturers to apply for and use the import adjustment offset amounts established by Presidential Proclamation 10925 of April 29, 2025, \"Amendments to Adjusting Imports of Automobiles and Automobile Parts Into the United States\", and Presidential Proclamation 10984 of October 17, 2025, \"Adjusting Imports of Medium- and Heavy-Duty Vehicles, Medium- and Heavy-Duty Vehicle Parts, and Buses Into the United States.\" This notice provides procedures to allow domestic manufacturers of automobile engines and MHDV engines to claim import adjustment offsets for imports of parts in a manner consistent with those Proclamations. The procedures exclude certain engine assembly operations determined to be limited production operations from being considered in the calculation of offsets.",
         "lang": "en",
-        "summary": "On May 15, 2026, the International Trade Administration published a Notice titled \"Amending the Procedures To Administer Import Adjustment O…",
+        "summary": "On May 15, 2026, the International Trade Administration published a Notice titled \"Amending the Procedures To Administer Import Adjustment Offset Amounts for Ce…",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -939,7 +939,7 @@
         "published_display": "2026-07-31 06:00",
         "raw_summary": "European Commission Press release Brussels, 31 Jul 2026 The European Commission has approved a €59 million Slovenian State aid scheme to promote battery energy storage systems, in line with the objectives of the Clean Industrial Deal. This measure will contribute to the transition towards a net-zero economy. The scheme was approved under the Clean Industrial Deal State Aid Framework (CISAF) adopted by the Commission on 25 June 2025.",
         "lang": "en",
-        "summary": "European Commission Press release Brussels, 31 Jul 2026 The European Commission has approved a €59 million Slovenian State aid scheme to pro…",
+        "summary": "The European Commission has approved a €59 million Slovenian State aid scheme to promote battery energy storage systems, in line with the objectives of the Clea…",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -957,7 +957,7 @@
         "published_display": "2026-07-30 20:00",
         "raw_summary": "El Niño is putting millions of lives at risk in eastern and southern Africa but the UN is ensuring that communities are better prepared to deal with its impact.",
         "lang": "en",
-        "summary": "El Niño is putting millions of lives at risk in eastern and southern Africa but the UN is ensuring that communities are better prepared to d…",
+        "summary": "El Niño is putting millions of lives at risk in eastern and southern Africa but the UN is ensuring that communities are better prepared to deal with its impact.",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -975,7 +975,7 @@
         "published_display": "2026-07-29 06:00",
         "raw_summary": "European Commission Press release Brussels, 29 Jul 2026 The European Commission has today endorsed Malta's Social Climate Plan – the fourth national plan adopted under the Social Climate Fund using revenues from carbon pricing to ensure a fair and inclusive clean transition. Malta's plan will mobilise €60.6 million until 2032, including €45.4 million from the European Union.",
         "lang": "en",
-        "summary": "European Commission Press release Brussels, 29 Jul 2026 The European Commission has today endorsed Malta's Social Climate Plan – the fourth …",
+        "summary": "The European Commission has today endorsed Malta's Social Climate Plan – the fourth national plan adopted under the Social Climate Fund using revenues from carb…",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -993,7 +993,7 @@
         "published_display": "2026-07-29 06:00",
         "raw_summary": "European Commission Press release Brussels, 29 Jul 2026 The European Commission has opened an in-depth investigation to assess whether an arbitration award ordering Romania to pay compensation to ten investors for changes to a renewable electricity support measure is in line with EU State aid rules.",
         "lang": "en",
-        "summary": "European Commission Press release Brussels, 29 Jul 2026 The European Commission has opened an in-depth investigation to assess whether an ar…",
+        "summary": "The European Commission has opened an in-depth investigation to assess whether an arbitration award ordering Romania to pay compensation to ten investors for ch…",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1011,7 +1011,7 @@
         "published_display": "2026-07-28 20:00",
         "raw_summary": "Climate-driven disasters are reaching “nightmare proportions” due to humanity’s “addiction” to fossil fuels, a top UN official warned on Tuesday.",
         "lang": "en",
-        "summary": "Climate-driven disasters are reaching “nightmare proportions” due to humanity’s “addiction” to fossil fuels, a top UN official warned on Tue…",
+        "summary": "Climate-driven disasters are reaching “nightmare proportions” due to humanity’s “addiction” to fossil fuels, a top UN official warned on Tuesday.",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1029,7 +1029,7 @@
         "published_display": "2026-07-27 20:00",
         "raw_summary": "Armed conflict, insecurity and environmental pressures are threatening ancient cities, historic castles and one of the world's greatest wildlife migrations.",
         "lang": "en",
-        "summary": "Armed conflict, insecurity and environmental pressures are threatening ancient cities, historic castles and one of the world's greatest wild…",
+        "summary": "Armed conflict, insecurity and environmental pressures are threatening ancient cities, historic castles and one of the world's greatest wildlife migrations.",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1047,7 +1047,7 @@
         "published_display": "2026-07-31 19:34",
         "raw_summary": "北韓官方媒體7月31日發表社論，批評駐日美軍司令部擴編，並警告朝鮮半島發生軍事衝突，已不是可能性的問題，而是「遲早的事」。 關注北韓動態的《北韓新聞》（NK News）、...…",
         "lang": "zh",
-        "summary": "北韓官方媒體7月31日發表社論，批評駐日美軍司令部擴編，並警告朝鮮半島發生軍事衝突，已不是可能性的問題，而是「遲早的事」。 關注北韓動態的《北韓新聞》（NK News）、...…",
+        "summary": "北韓官方媒體7月31日發表社論，批評駐日美軍司令部擴編，並警告朝鮮半島發生軍事衝突，已不是可能性的問題，而是「遲早的事」。 關注北韓動態的《北韓新聞》（NK News）、...",
         "bullets": [],
         "score": 4,
         "summary_by": "extract"
@@ -1065,7 +1065,7 @@
         "published_display": "2026-07-31 13:05",
         "raw_summary": "影》悄悄近身遭遇陸052、055、056艦美無人艇恐改變交戰規則- 軍事 中時新聞網 美商無人艇菲海域跟拍中國驅逐艦 揭示戰爭型態改變[影] 中央社 CNA （影）24萬美元無人艇可幹掉052D大驅? 「飛魚」大突破在菲近距直擊中艦| 國際 Newtalk新聞 曾在台海跟拍中國軍艦 美無人船近拍擅入菲EEZ解放軍 | 中央廣播電臺 LINE TODAY 美24萬美元成本無人艇 跟蹤拍下中國10億打造驅逐艦在菲海域活動 自由軍武頻道",
         "lang": "zh",
-        "summary": "影》悄悄近身遭遇陸052、055、056艦美無人艇恐改變交戰規則- 軍事 中時新聞網 美商無人艇菲海域跟拍中國驅逐艦 揭示戰爭型態改變[影] 中央社 CNA （影）24萬美元無人艇可幹掉052D大驅? 「飛魚」大突破在菲近距直擊中艦| 國際 Newtalk新聞 曾在台海跟拍中國軍…",
+        "summary": "",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -1083,7 +1083,7 @@
         "published_display": "2026-07-31 12:11",
         "raw_summary": "烏克蘭基輔一家隸屬於美國德拉瓦州註冊公司的無人機工廠，於上週五（24日）遭俄羅斯以彈道飛彈摧毀，外媒認為，這是莫斯科在此次衝突中，首次將目標對準美國企業。 根據《衛報》報導...…",
         "lang": "zh",
-        "summary": "烏克蘭基輔一家隸屬於美國德拉瓦州註冊公司的無人機工廠，於上週五（24日）遭俄羅斯以彈道飛彈摧毀，外媒認為，這是莫斯科在此次衝突中，首次將目標對準美國企業。 根據《衛報》報導...…",
+        "summary": "烏克蘭基輔一家隸屬於美國德拉瓦州註冊公司的無人機工廠，於上週五（24日）遭俄羅斯以彈道飛彈摧毀，外媒認為，這是莫斯科在此次衝突中，首次將目標對準美國企業。 根據《衛報》報導...",
         "bullets": [],
         "score": 3,
         "summary_by": "extract"
@@ -1101,7 +1101,7 @@
         "published_display": "2026-07-31 22:00",
         "raw_summary": "「路透」報導揭露，「OpenAI」、「Anthropic」等美國頂尖人工智慧（AI）公司所開發的模型，被中國軍事研究人員用於訓練國內AI系統，精進中國國防和監控、審查能力。縱使...…",
         "lang": "zh",
-        "summary": "「路透」報導揭露，「OpenAI」、「Anthropic」等美國頂尖人工智慧（AI）公司所開發的模型，被中國軍事研究人員用於訓練國內AI系統，精進中國國防和監控、審查能力。縱使...…",
+        "summary": "「路透」報導揭露，「OpenAI」、「Anthropic」等美國頂尖人工智慧（AI）公司所開發的模型，被中國軍事研究人員用於訓練國內AI系統，精進中國國防和監控、審查能力。縱使...",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1155,7 +1155,7 @@
         "published_display": "2026-07-31 16:10",
         "raw_summary": "聯合國選新祕書長 美中博弈下誰將掌舵？ 自由時報 女性有望掌舵聯合國？ 安理會首輪非正式意向投票葛林斯潘領先 rti.org.tw 打破80年全男性？聯合國秘書長改選「她」崛起 關鍵考驗曝光 Yahoo新聞 聯合國出現首任女祕書長？遴選程序啟動- 國際 自由時報 聯合國秘書長遴選開跑！前哥斯大黎加副總統「首輪意向投票」領先 PChome Online 新聞",
         "lang": "zh",
-        "summary": "聯合國選新祕書長 美中博弈下誰將掌舵？ 自由時報 女性有望掌舵聯合國？ 安理會首輪非正式意向投票葛林斯潘領先 rti.org.tw 打破80年全男性？聯合國秘書長改選「她」崛起 關鍵考驗曝光 Yahoo新聞 聯合國出現首任女祕書長？",
+        "summary": "",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1191,7 +1191,7 @@
         "published_display": "2026-07-31 10:42",
         "raw_summary": "影》美祭「眾神之錘」秘密武器海上首實測癱瘓精準飛彈大突破- 軍事 中時新聞網 川普「眾神之鎚」要讓習近平戰時失明？美軍海上首測新電戰系統結果曝| 國際焦點| 全球 UDN 美「聚合計畫頂點6號」演習 驗證次世代指管系統 Yahoo新聞 美軍測試新型戰場技術 現正評估並篩選不合適的設備 Business Insider Taiwan 美祕密武器亮相 「諸神之錘」讓敵方導彈脫靶 大纪元",
         "lang": "zh",
-        "summary": "影》美祭「眾神之錘」秘密武器海上首實測癱瘓精準飛彈大突破- 軍事 中時新聞網 川普「眾神之鎚」要讓習近平戰時失明？美軍海上首測新電戰系統結果曝| 國際焦點| 全球 UDN 美「聚合計畫頂點6號」演習 驗證次世代指管系統 Yahoo新聞 美軍測試新型戰場技術 現正評估並篩選不合適的…",
+        "summary": "",
         "bullets": [],
         "score": 2,
         "summary_by": "extract"
@@ -1227,7 +1227,7 @@
         "published_display": "2026-08-01 01:03",
         "raw_summary": "Spain's prime minister described the situation as an \"attack\" on its North African territory and said all illegal migrants would be returned to Morocco.",
         "lang": "en",
-        "summary": "Spain's prime minister described the situation as an \"attack\" on its North African territory and said all illegal migrants would be returned…",
+        "summary": "Spain's prime minister described the situation as an \"attack\" on its North African territory and said all illegal migrants would be returned to Morocco.",
         "bullets": [],
         "score": 1,
         "summary_by": "extract"
@@ -1353,7 +1353,7 @@
         "published_display": "2026-07-31 20:00",
         "raw_summary": "Wildfires are often associated with the destruction they leave behind, but the smoke they produce can pose a serious health threat far beyond the fire zone, the World Health Organization (WHO) has warned.",
         "lang": "en",
-        "summary": "Wildfires are often associated with the destruction they leave behind, but the smoke they produce can pose a serious health threat far beyon…",
+        "summary": "Wildfires are often associated with the destruction they leave behind, but the smoke they produce can pose a serious health threat far beyond the fire zone, the…",
         "bullets": [],
         "score": 1,
         "summary_by": "extract"
@@ -1371,7 +1371,7 @@
         "published_display": "2026-07-30 20:00",
         "raw_summary": "Uganda is experiencing a growing climate of fear as increasing restrictions on fundamental freedoms leave opposition supporters, journalists, human rights defenders and civil society groups at heightened risk of abuse, according to the UN Human Rights Office (OHCHR).",
         "lang": "en",
-        "summary": "Uganda is experiencing a growing climate of fear as increasing restrictions on fundamental freedoms leave opposition supporters, journalists…",
+        "summary": "Uganda is experiencing a growing climate of fear as increasing restrictions on fundamental freedoms leave opposition supporters, journalists, human rights defen…",
         "bullets": [],
         "score": 1,
         "summary_by": "extract"

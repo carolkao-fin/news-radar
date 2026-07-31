@@ -21,19 +21,76 @@ _SYSTEM = """你是新聞摘要編輯。使用者會給你數則新聞的標題�
 只回傳 JSON：{"results": [{"id": "原始 id", "summary": "...", "bullets": ["...", "..."]}]}"""
 
 
-def extractive_summary(article, max_len=140):
-    """不使用 LLM 的備援摘要：清理後的 RSS 描述前段。"""
-    raw = re.sub(r"\s+", " ", article.get("raw_summary", "")).strip()
+# RSS 描述裡的機器格式前綴／中繼資料，直接拿來當摘要會很難讀
+_BOILERPLATE = [
+    # arXiv：「arXiv:2607.28505v1 Announce Type: new Abstract: ...」
+    (re.compile(r"^arXiv:\S+\s*Announce Type:\s*\S+\s*(Abstract:)?\s*", re.I), ""),
+    # 歐盟新聞室：「European Commission Press release Brussels, 31 Jul 2026 ...」
+    (re.compile(r"^European Commission\s+Press release\s+[A-Za-z]+,\s*"
+                r"\d{1,2}\s+\w+\s+\d{4}\s*", re.I), ""),
+    # Drupal 站台的作者與時間戳：「Anonymous (not verified) Fri, 07/31/2026 - 09:00」
+    (re.compile(r"\s*(?:Anonymous \(not verified\)|[a-z]{3,20})\s+"
+                r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*\d{1,2}/\d{1,2}/\d{4}\s*-\s*"
+                r"\d{1,2}:\d{2}\s*", re.I), " "),
+    # 公文表頭：「財政部 公告 發文日期：... 發文字號：... 附件：...」
+    (re.compile(r"^.{0,20}?公告\s*發文日期：.*?(?=主旨：)", re.S), ""),
+    (re.compile(r"發文日期：\S+\s*"), ""),
+    (re.compile(r"發文字號：\S+\s*"), ""),
+    (re.compile(r"附件：[^。]{0,30}?(?=主旨：)"), ""),
+    # 央行新聞稿表頭
+    (re.compile(r"^中央銀行新聞稿\s*\d+年\d+月\d+日發布\s*(（\d+）新聞發布第\d+號)?\s*"), ""),
+]
+
+# 這些字串是「閱讀更多」之類的連結文字，不是摘要
+_USELESS = {"內文連結", "詳全文", "詳全文…", "閱讀更多", "繼續閱讀",
+            "read more", "more", "continue reading", "(more…)"}
+
+_MIN_LEN = 12
+
+
+def clean_summary(raw, title="", kind=""):
+    """把 RSS 描述整理成可讀的摘要；判定為無用時回傳空字串。"""
     if not raw:
-        return article["title"]
-    if len(raw) <= max_len:
-        return raw
-    cut = raw[:max_len]
-    for p in ("。", "．", ". ", "！", "？"):
+        return ""
+    # Google 新聞這類彙整來源的描述是一串「相關報導標題」，不是摘要
+    if kind == "aggregator":
+        return ""
+
+    text = re.sub(r"\s+", " ", raw).strip()
+    for pattern, repl in _BOILERPLATE:
+        text = pattern.sub(repl, text)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # 描述開頭常常整句重複標題，去掉才不會讀兩次
+    if title:
+        t = title.strip()
+        if text.startswith(t):
+            text = text[len(t):].lstrip(" -–—｜|:：")
+
+    text = re.sub(r"(\[…\]|\[\.\.\.\]|…+|\.{3,})\s*$", "", text).strip()
+    text = text.strip(" -–—｜|:：")
+
+    if text.lower() in _USELESS or len(text) < _MIN_LEN:
+        return ""
+    if title and text.strip() == title.strip():
+        return ""
+    return text
+
+
+def extractive_summary(article, max_len=160):
+    """不使用 LLM 的備援摘要：清理後的 RSS 描述前段。無可用內容時回傳空字串。"""
+    text = clean_summary(article.get("raw_summary", ""),
+                         article.get("title", ""), article.get("kind", ""))
+    if not text:
+        return ""
+    if len(text) <= max_len:
+        return text
+    cut = text[:max_len]
+    for p in ("。", "！", "？", ". "):
         idx = cut.rfind(p)
         if idx > max_len * 0.5:
             return cut[: idx + 1]
-    return cut + "…"
+    return cut.rstrip() + "…"
 
 
 def summarize(articles, use_llm=True, progress=None):
@@ -53,7 +110,7 @@ def summarize(articles, use_llm=True, progress=None):
             progress(start, len(articles))
         payload = "\n\n".join(
             f'[{a["id"]}]\n標題：{a["title"]}\n來源：{a["source_name"]}\n'
-            f'原始描述：{a.get("raw_summary", "")[:800] or "（無）"}'
+            f'原始描述：{clean_summary(a.get("raw_summary", ""), a["title"], a.get("kind", ""))[:800] or "（無，請直接依標題撰寫）"}'
             for a in chunk
         )
         data = llm.chat_json(_SYSTEM, payload, max_tokens=3000)

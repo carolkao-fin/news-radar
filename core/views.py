@@ -18,6 +18,7 @@ CARD_CSS = """
 .nr-official { background:#E4F4F4; color:#0F6E6E; border:1px solid #9FD8D8; }
 .nr-media { background:#F1F3F5; color:#5A6672; border:1px solid #DDE1E6; }
 .nr-summary { font-size:.92rem; line-height:1.65; margin-bottom:6px; }
+.nr-nosum { color:#8a94a0; font-style:italic; }
 .nr-bullets { font-size:.86rem; color:#3d4a57; margin:0 0 6px 1.1rem; padding:0; }
 .nr-src { font-size:.8rem; }
 </style>
@@ -42,12 +43,17 @@ def render_article(a):
     via = ""
     if a.get("via") and a["via"] != a["source_name"]:
         via = f'．經由 {_esc(a["via"])}'
-    summary = _esc(a.get("summary") or a.get("raw_summary") or "（無摘要）")
+    text = (a.get("summary") or "").strip()
+    if text:
+        summary = f'<div class="nr-summary">{_esc(text)}</div>'
+    else:
+        summary = ('<div class="nr-summary nr-nosum">'
+                   '此來源只提供標題，點連結閱讀原文。</div>')
     st.markdown(
         f'<div class="nr-card">'
         f'<div class="nr-title"><a href="{_esc(a["url"])}" target="_blank">{_esc(a["title"])}</a></div>'
         f'<div class="nr-meta">{badge}{_esc(a["source_name"])}{via}．{_esc(a.get("published_display", ""))}</div>'
-        f'<div class="nr-summary">{summary}</div>'
+        f'{summary}'
         f'{bullets}'
         f'<div class="nr-src">🔗 <a href="{_esc(a["url"])}" target="_blank">前往原始資料</a></div>'
         f'</div>',
