@@ -1,0 +1,46 @@
+name: 每日新聞更新
+
+on:
+  schedule:
+    # UTC 23:00 = 台灣時間隔天早上 07:00
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "收錄最近幾天的新聞"
+        required: false
+        default: "2"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 抓取並摘要新聞
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts/update_news.py --days ${{ github.event.inputs.days || '2' }}
+
+      - name: 提交結果
+        run: |
+          git config user.name "news-radar-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "沒有變動，略過 commit"
+          else
+            git commit -m "chore: 更新 $(TZ=Asia/Taipei date +%Y-%m-%d) 新聞資料"
+            git push
+          fi

@@ -75,6 +75,14 @@ SOURCES = {
         "lang": "zh",
         "note": "中央通訊社科技新聞（媒體）",
     },
+    "technews": {
+        "name": "科技新報 TechNews",
+        "url": "https://technews.tw/feed/",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "台灣科技產業媒體，半導體與 AI 應用報導（媒體）",
+    },
     "mit_tr_ai": {
         "name": "MIT Technology Review",
         "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
@@ -165,6 +173,46 @@ SOURCES = {
         "lang": "en",
         "note": "Federal Register 關稅相關法令公告（第一手法規原文）",
     },
+    "cnyes_headline": {
+        "name": "鉅亨網 頭條",
+        "url": "https://news.cnyes.com/rss/v1/news/category/headline",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "Anue 鉅亨網頭條新聞，國際財經與總體經濟（媒體）",
+    },
+    "cnyes_tw": {
+        "name": "鉅亨網 台股產業",
+        "url": "https://news.cnyes.com/rss/v1/news/category/tw_stock",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "鉅亨網台股與產業動態（媒體）",
+    },
+    "moneydj": {
+        "name": "MoneyDJ 財經",
+        "url": "https://www.moneydj.com/KMDJ/RssCenter.aspx?svc=NR&fno=1&arg=MB010000",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "MoneyDJ 理財網國際總經新聞（媒體）",
+    },
+    "udn_money": {
+        "name": "經濟日報 產業",
+        "url": "https://money.udn.com/rssfeed/news/1001/5591?ch=money",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "經濟日報產業要聞（媒體）",
+    },
+    "udn_money_world": {
+        "name": "經濟日報 國際",
+        "url": "https://money.udn.com/rssfeed/news/1001/5588?ch=money",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "經濟日報國際財經（媒體）",
+    },
     "nikkei_asia": {
         "name": "Nikkei Asia",
         "url": "https://asia.nikkei.com/rss/feed/nar",
@@ -233,6 +281,14 @@ SOURCES = {
         "lang": "zh",
         "note": "Deutsche Welle 中文版國際新聞（媒體）",
     },
+    "ltn_world": {
+        "name": "自由時報 國際",
+        "url": "https://news.ltn.com.tw/rss/world.xml",
+        "official": False,
+        "broad": False,
+        "lang": "zh",
+        "note": "自由時報國際新聞（媒體）",
+    },
     "pts_news": {
         "name": "公視新聞",
         "url": "https://news.pts.org.tw/xml/newsfeed.xml",
@@ -246,13 +302,15 @@ SOURCES = {
 # 新增主題時，讓系統自動挑選來源用的分類索引
 SOURCE_GROUPS = {
     "ai": ["arxiv_ai", "arxiv_cl", "ec_digital", "nist", "oecd_ai", "openai",
-           "google_ai", "cna_tech", "mit_tr_ai"],
+           "google_ai", "cna_tech", "technews", "cnyes_tw", "mit_tr_ai"],
     "trade": ["customs_news", "customs_law", "trade_policy", "trade_intl", "mof_news",
               "cbc", "wto", "ustr", "eu_trade", "fed_register_tariff",
+              "cnyes_headline", "cnyes_tw", "moneydj", "udn_money", "udn_money_world",
               "nikkei_asia", "cna_finance"],
-    "world": ["un_news", "ec_press", "cna_world", "bbc_world", "gnews_world", "dw_chinese"],
-    "taiwan": ["cna_world", "cna_finance", "cna_tech", "pts_news",
-               "trade_intl", "mof_news", "cbc"],
+    "world": ["un_news", "ec_press", "cna_world", "bbc_world", "gnews_world",
+              "dw_chinese", "ltn_world", "cnyes_headline"],
+    "taiwan": ["cna_world", "cna_finance", "cna_tech", "pts_news", "ltn_world",
+               "cnyes_tw", "udn_money", "trade_intl", "mof_news", "cbc"],
 }
 
 

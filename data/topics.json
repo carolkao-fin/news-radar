@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-01T00:19:51+08:00",
+  "updated_at": "2026-08-01T00:37:56+08:00",
   "topics": [
     {
       "id": "ai",
@@ -42,6 +42,8 @@
         "openai",
         "google_ai",
         "cna_tech",
+        "technews",
+        "cnyes_tw",
         "mit_tr_ai"
       ],
       "news_queries": [
@@ -70,16 +72,21 @@
         "進口",
         "通關",
         "海關",
+        "關務",
+        "進出口",
         "經貿",
         "供應鏈",
         "反傾銷",
+        "平衡稅",
         "原產地",
-        "台灣",
-        "臺灣",
+        "出口管制",
         "自由貿易協定",
+        "貿易談判",
         "301",
         "232",
-        "匯率"
+        "匯率",
+        "貿易順差",
+        "貿易逆差"
       ],
       "keywords_en": [
         "tariff",
@@ -87,11 +94,14 @@
         "export",
         "import",
         "customs",
-        "Taiwan",
         "supply chain",
         "anti-dumping",
+        "countervailing",
         "Section 301",
-        "WTO"
+        "Section 232",
+        "WTO",
+        "trade deal",
+        "export control"
       ],
       "groups": [
         "trade"
@@ -107,6 +117,11 @@
         "ustr",
         "eu_trade",
         "fed_register_tariff",
+        "cnyes_headline",
+        "cnyes_tw",
+        "moneydj",
+        "udn_money",
+        "udn_money_world",
         "nikkei_asia",
         "cna_finance"
       ],
@@ -130,15 +145,19 @@
       "enabled": true,
       "description": "地緣政治、國際組織決議與全球重大事件",
       "keywords_zh": [
-        "國際",
         "外交",
         "制裁",
         "衝突",
+        "戰爭",
         "聯合國",
         "峰會",
-        "選舉",
-        "能源",
-        "氣候"
+        "大選",
+        "停火",
+        "能源危機",
+        "氣候",
+        "地緣政治",
+        "難民",
+        "軍事"
       ],
       "keywords_en": [
         "global",
@@ -159,14 +178,11 @@
         "cna_world",
         "bbc_world",
         "gnews_world",
-        "dw_chinese"
+        "dw_chinese",
+        "ltn_world",
+        "cnyes_headline"
       ],
-      "news_queries": [
-        {
-          "q": "國際 情勢 重大",
-          "lang": "zh"
-        }
-      ],
+      "news_queries": [],
       "auto_by": "builtin"
     }
   ]
