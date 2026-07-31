@@ -1,0 +1,173 @@
+{
+  "updated_at": "2026-08-01T00:19:51+08:00",
+  "topics": [
+    {
+      "id": "ai",
+      "name": "AI 人工智慧",
+      "emoji": "🤖",
+      "builtin": true,
+      "enabled": true,
+      "description": "AI 技術突破、產業動態與各國監理政策",
+      "keywords_zh": [
+        "人工智慧",
+        "AI",
+        "生成式",
+        "大型語言模型",
+        "機器學習",
+        "晶片",
+        "半導體",
+        "演算法",
+        "自動化",
+        "資料中心"
+      ],
+      "keywords_en": [
+        "artificial intelligence",
+        "AI",
+        "LLM",
+        "machine learning",
+        "generative",
+        "chip",
+        "semiconductor",
+        "AI Act"
+      ],
+      "groups": [
+        "ai"
+      ],
+      "sources": [
+        "arxiv_ai",
+        "arxiv_cl",
+        "ec_digital",
+        "nist",
+        "oecd_ai",
+        "openai",
+        "google_ai",
+        "cna_tech",
+        "mit_tr_ai"
+      ],
+      "news_queries": [
+        {
+          "q": "人工智慧 政策 監理",
+          "lang": "zh"
+        },
+        {
+          "q": "AI regulation policy",
+          "lang": "en"
+        }
+      ],
+      "auto_by": "builtin"
+    },
+    {
+      "id": "trade",
+      "name": "台灣國際貿易與關稅",
+      "emoji": "📈",
+      "builtin": true,
+      "enabled": true,
+      "description": "台灣進出口、關稅措施、貿易談判與國際經貿情勢",
+      "keywords_zh": [
+        "關稅",
+        "貿易",
+        "出口",
+        "進口",
+        "通關",
+        "海關",
+        "經貿",
+        "供應鏈",
+        "反傾銷",
+        "原產地",
+        "台灣",
+        "臺灣",
+        "自由貿易協定",
+        "301",
+        "232",
+        "匯率"
+      ],
+      "keywords_en": [
+        "tariff",
+        "trade",
+        "export",
+        "import",
+        "customs",
+        "Taiwan",
+        "supply chain",
+        "anti-dumping",
+        "Section 301",
+        "WTO"
+      ],
+      "groups": [
+        "trade"
+      ],
+      "sources": [
+        "customs_news",
+        "customs_law",
+        "trade_policy",
+        "trade_intl",
+        "mof_news",
+        "cbc",
+        "wto",
+        "ustr",
+        "eu_trade",
+        "fed_register_tariff",
+        "nikkei_asia",
+        "cna_finance"
+      ],
+      "news_queries": [
+        {
+          "q": "台灣 關稅 貿易",
+          "lang": "zh"
+        },
+        {
+          "q": "Taiwan tariff trade",
+          "lang": "en"
+        }
+      ],
+      "auto_by": "builtin"
+    },
+    {
+      "id": "world",
+      "name": "國際重大新聞",
+      "emoji": "🌍",
+      "builtin": true,
+      "enabled": true,
+      "description": "地緣政治、國際組織決議與全球重大事件",
+      "keywords_zh": [
+        "國際",
+        "外交",
+        "制裁",
+        "衝突",
+        "聯合國",
+        "峰會",
+        "選舉",
+        "能源",
+        "氣候"
+      ],
+      "keywords_en": [
+        "global",
+        "sanctions",
+        "conflict",
+        "summit",
+        "United Nations",
+        "election",
+        "energy",
+        "climate"
+      ],
+      "groups": [
+        "world"
+      ],
+      "sources": [
+        "un_news",
+        "ec_press",
+        "cna_world",
+        "bbc_world",
+        "gnews_world",
+        "dw_chinese"
+      ],
+      "news_queries": [
+        {
+          "q": "國際 情勢 重大",
+          "lang": "zh"
+        }
+      ],
+      "auto_by": "builtin"
+    }
+  ]
+}
