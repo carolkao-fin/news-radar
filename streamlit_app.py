@@ -7,11 +7,12 @@
 import functools
 import json
 import re
+from datetime import date, timedelta
 
 import streamlit as st
 
-from core import (keywords as keywords_mod, llm, pipeline, source_registry,
-                  store, topics as topics_mod, views)
+from core import (keywords as keywords_mod, llm, pipeline, report,
+                  source_registry, store, topics as topics_mod, views)
 from core.defaults import BUILTIN_TOPICS, DEFAULT_DAYS, MAX_DAYS
 
 st.set_page_config(page_title="每日新聞雷達", page_icon="📡", layout="centered")
@@ -453,6 +454,7 @@ def update_page():
     st.subheader("歷史資料")
     if dates:
         st.write("已有快照：", "、".join(dates[:14]) + ("…" if len(dates) > 14 else ""))
+        st.caption("要匯出成 Word 或打包 JSON，請到左側「📥 下載紀錄」頁自由選擇期間。")
         snap = store.load_news(dates[0])
         st.download_button(
             f"下載 {dates[0]} 的完整資料（JSON）",
@@ -460,6 +462,110 @@ def update_page():
             file_name=f"news-{dates[0]}.json", mime="application/json")
     else:
         st.caption("尚無資料。")
+
+
+# ── 下載紀錄 ────────────────────────────────────────────────────
+def _range_presets(d_min, d_max):
+    """快速選擇按鈕；直接改寫 date_input 的 session_state 再 rerun。"""
+    c1, c2, c3, c4 = st.columns(4)
+    presets = [(c1, "最近 7 天", 6), (c2, "最近 30 天", 29),
+               (c3, "最近 90 天", 89), (c4, "全部", None)]
+    for col, label, back in presets:
+        if col.button(label, key=f"preset_{label}", use_container_width=True):
+            start = d_min if back is None else max(d_min, d_max - timedelta(days=back))
+            st.session_state["dl_range"] = (start, d_max)
+            st.rerun()
+
+
+def download_page():
+    st.title("📥 下載紀錄")
+    st.caption("自由選擇期間，把過去累積的每日新聞匯出成 Word 檔（.docx）留存或轉寄。")
+
+    dates = store.available_dates()
+    if not dates:
+        views.no_data_hint()
+        return
+
+    d_min, d_max = date.fromisoformat(dates[-1]), date.fromisoformat(dates[0])
+    st.caption(f"目前資料庫涵蓋 {d_min} ～ {d_max}，共 {len(dates)} 天。")
+
+    if "dl_range" not in st.session_state:
+        st.session_state["dl_range"] = (max(d_min, d_max - timedelta(days=6)), d_max)
+    _range_presets(d_min, d_max)
+    picked = st.date_input("下載期間（點兩次選起訖日）", min_value=d_min, max_value=d_max,
+                           key="dl_range", format="YYYY-MM-DD")
+
+    if not isinstance(picked, (tuple, list)) or len(picked) != 2:
+        st.info("請再點一次選擇結束日期。")
+        return
+    start, end = picked
+    sel = report.dates_in_range(start, end)
+    if not sel:
+        st.warning(f"{start} ～ {end} 之間沒有任何快照。"
+                   "每日排程從建站當天才開始累積，請把期間往後拉。")
+        return
+    st.success(f"選取 {start} ～ {end}，其中 **{len(sel)} 天**有資料。")
+
+    # ── 內容選項 ──
+    avail_topics = report.topics_in_dates(sel)
+    picked_topics = st.multiselect(
+        "要包含的主題", [tid for tid, _ in avail_topics],
+        default=[tid for tid, _ in avail_topics],
+        format_func=lambda i: next(n for t, n in avail_topics if t == i),
+        help="只列出這段期間實際有資料的主題（含已刪除的舊主題）。")
+
+    with st.expander("⚙️ 版面與內容設定"):
+        c1, c2 = st.columns(2)
+        with c1:
+            only_official = st.checkbox("只收錄官方／第一手來源", value=False)
+            include_summary = st.checkbox("包含摘要內文", value=True)
+            include_bullets = st.checkbox("包含重點條列", value=True)
+        with c2:
+            include_overview = st.checkbox("附上各日則數總表", value=True)
+            oldest_first = st.checkbox("日期由舊到新排列", value=False,
+                                       help="不勾選則與網站一致，最新的日期排在最前面。")
+            limit = st.number_input("每個主題每天最多幾則（0 = 全部）",
+                                    min_value=0, max_value=60, value=0, step=5)
+
+    if not picked_topics:
+        st.warning("至少要選一個主題。")
+        return
+
+    preview = report.collect(sel, topic_ids=set(picked_topics),
+                             only_official=only_official,
+                             limit_per_topic=int(limit))
+    n_articles = sum(len(arts) for _d, _s, blocks in preview
+                     for _tid, _name, _brief, arts in blocks)
+    st.caption(f"預計匯出 {len(preview)} 天、{n_articles} 則新聞。")
+
+    if st.button("📄 產生 Word 檔", type="primary", disabled=not n_articles):
+        with st.spinner("排版中…"):
+            try:
+                st.session_state["dl_docx"] = report.build_docx(
+                    sel, topic_ids=set(picked_topics), only_official=only_official,
+                    include_summary=include_summary, include_bullets=include_bullets,
+                    include_overview=include_overview, limit_per_topic=int(limit),
+                    oldest_first=oldest_first)
+                st.session_state["dl_docx_name"] = report.filename(sel, "docx")
+            except Exception as e:  # noqa: BLE001 — 直接把錯誤顯示給使用者
+                st.session_state.pop("dl_docx", None)
+                st.error(f"產生失敗：{e}")
+    if not n_articles:
+        st.warning("目前的篩選條件下沒有任何新聞，調整主題或取消「只收錄官方來源」再試。")
+
+    blob = st.session_state.get("dl_docx")
+    if blob:
+        st.download_button(
+            f'⬇️ 下載 {st.session_state["dl_docx_name"]}（{len(blob) / 1024:.0f} KB）',
+            data=blob, file_name=st.session_state["dl_docx_name"], type="primary",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+    st.divider()
+    st.caption("需要原始資料做後續處理時，可以打包這段期間的 JSON 快照。")
+    st.download_button(
+        f"下載原始 JSON（{len(sel)} 天，zip）",
+        data=report.build_json_zip(sel),
+        file_name=report.filename(sel, "zip"), mime="application/zip")
 
 
 def sources_page():
@@ -487,6 +593,7 @@ def build_nav():
     pages.setdefault("設定", []).extend([
         st.Page(manage_topics, title="主題管理", icon="➕", url_path="topics"),
         st.Page(update_page, title="更新與設定", icon="⚙️", url_path="update"),
+        st.Page(download_page, title="下載紀錄", icon="📥", url_path="download"),
         st.Page(sources_page, title="資料來源", icon="📚", url_path="sources"),
     ])
     return st.navigation(pages)
