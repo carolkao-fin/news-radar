@@ -10,7 +10,8 @@ import re
 
 import streamlit as st
 
-from core import llm, pipeline, source_registry, store, topics as topics_mod, views
+from core import (keywords as keywords_mod, llm, pipeline, source_registry,
+                  store, topics as topics_mod, views)
 from core.defaults import BUILTIN_TOPICS, DEFAULT_DAYS, MAX_DAYS
 
 st.set_page_config(page_title="每日新聞雷達", page_icon="📡", layout="centered")
@@ -75,6 +76,54 @@ def _sidebar_status():
 
 
 # ── 主題管理 ────────────────────────────────────────────────────
+def _keyword_tools(t):
+    """關鍵字的兩個自動化工具：重新產生、從實際新聞建議。"""
+    k1, k2 = st.columns(2)
+
+    if k1.button("♻️ 重新產生關鍵字", key=f"regen_{t['id']}",
+                 help="依主題名稱重新展開，會與現有關鍵字合併，不會蓋掉你手動加的"):
+        with st.spinner("產生中…"):
+            added, how = topics_mod.regenerate_keywords(t["id"], use_llm=llm.available())
+        label = "AI 產生" if how == "llm" else "詞庫展開"
+        if added:
+            st.success(f'（{label}）新增了 {len(added)} 個：{"、".join(added)}')
+        else:
+            st.info(f"（{label}）沒有可以再補的關鍵字。")
+        st.rerun()
+
+    if k2.button("💡 從實際新聞建議", key=f"sugg_{t['id']}",
+                 help="試抓一次這個主題的新聞，統計實際出現的高頻詞"):
+        with st.spinner("試抓並統計中…"):
+            zh, en, n = topics_mod.suggest_keywords(t)
+        st.session_state[f"sugg_res_{t['id']}"] = (zh, en, n)
+
+    res = st.session_state.get(f"sugg_res_{t['id']}")
+    if res:
+        zh, en, n = res
+        st.caption(f"從最近 {n} 則新聞統計出的候選詞：")
+        if not (zh or en):
+            st.info("沒有找到值得補充的新詞彙，現有關鍵字的涵蓋率應該已經夠了。")
+        else:
+            # 太籠統的詞（台灣、中國、科技⋯）仍然列出，但不預設勾選：
+            # 這類詞在台灣媒體幾乎每篇都會出現，加進去等於沒有篩選
+            default = [k for k in zh if not keywords_mod.is_broad_term(k)][:6]
+            picked = st.multiselect("勾選要加入的關鍵字", zh + en,
+                                    default=default, key=f"pick_{t['id']}")
+            st.caption("灰色未勾選的通常是太籠統的詞（例如「台灣」「科技」），"
+                       "加進去反而會抓到不相干的報導。")
+            if st.button("加入選取的關鍵字", key=f"addkw_{t['id']}", disabled=not picked):
+                cur_zh = list(t.get("keywords_zh", []))
+                cur_en = list(t.get("keywords_en", []))
+                for k in picked:
+                    bucket = cur_en if k.isascii() else cur_zh
+                    if k not in bucket:
+                        bucket.append(k)
+                topics_mod.update_topic(t["id"], keywords_zh=cur_zh, keywords_en=cur_en)
+                st.session_state.pop(f"sugg_res_{t['id']}", None)
+                st.success(f'已加入 {len(picked)} 個關鍵字')
+                st.rerun()
+
+
 def manage_topics():
     st.title("➕ 主題管理")
     st.caption("輸入一個主題名稱，系統會自動展開搜尋關鍵字並挑選來源，之後每天自動追蹤。")
@@ -89,7 +138,9 @@ def manage_topics():
             new_cat = st.text_input("新類別名稱", placeholder="上方選「＋ 新增類別」時填寫")
         use_llm = st.checkbox("用 AI 自動產生關鍵字與來源設定", value=llm.available(),
                               disabled=not llm.available(),
-                              help="未設定 GROQ_API_KEY 時會改用規則式展開")
+                              help="沒有金鑰時改用內建的領域詞庫展開，一樣會產生多個關鍵字")
+        trial = st.checkbox("建立後立刻試抓一次，並從實際新聞建議更多關鍵字",
+                            value=True, help="會多花 10～30 秒")
         submitted = st.form_submit_button("建立主題", type="primary")
 
     if submitted:
@@ -122,6 +173,19 @@ def manage_topics():
                     "搜尋查詢": t["news_queries"],
                     "使用來源": [source_registry.source_name(s) for s in t["sources"]],
                 })
+                if trial:
+                    with st.spinner("試抓中…"):
+                        zh, en, n = topics_mod.suggest_keywords(t)
+                    if n:
+                        st.info(f"試抓到 **{n} 則**新聞。")
+                        if zh or en:
+                            st.markdown("從實際內容看，這些詞也常出現，可以考慮補進關鍵字：")
+                            st.code("、".join(zh[:12] + en[:4]), language=None)
+                            st.caption("展開下方該主題的設定即可加入。")
+                    else:
+                        st.warning(
+                            "試抓不到新聞。可能是關鍵字太窄、或這個主題最近沒有報導 —— "
+                            "可以在下方加幾個同義詞，或把收錄天數拉長。")
                 if st.button("重新整理頁面"):
                     st.rerun()
 
@@ -162,6 +226,7 @@ def manage_topics():
                               key=f"kz_{t['id']}", height=68)
             ke = st.text_area("英文關鍵字（逗號分隔）", ", ".join(t.get("keywords_en", [])),
                               key=f"ke_{t['id']}", height=68)
+            _keyword_tools(t)
             qs = st.text_area("新聞搜尋查詢（一行一組，格式：查詢字串 | zh 或 en）",
                               "\n".join(f'{q["q"]} | {q.get("lang", "zh")}'
                                         for q in t.get("news_queries", [])),

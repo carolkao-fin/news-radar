@@ -11,6 +11,7 @@ import re
 import urllib.parse
 
 from . import llm, store
+from .keywords import expand_from_lexicon, suggest_from_articles
 from .defaults import (BUILTIN_TOPICS, CATEGORY_ORDER, DEFAULT_CATEGORIES,
                        GROUP_TO_CATEGORY, get_builtin)
 from .sources import SOURCE_GROUPS
@@ -20,7 +21,8 @@ _GROUP_HINTS = {
     "ai": ["ai", "人工智慧", "機器學習", "大型語言模型", "llm", "生成式", "演算法",
            "深度學習", "晶片", "半導體", "科技", "資料", "自動化", "機器人"],
     "trade": ["貿易", "關稅", "出口", "進口", "通關", "供應鏈", "經貿", "tariff",
-              "trade", "wto", "fta", "反傾銷", "原產地", "海關", "匯率", "投資"],
+              "trade", "wto", "fta", "反傾銷", "原產地", "海關", "匯率", "投資",
+              "碳", "cbam", "稀土", "礦產", "能源", "風電", "光電", "電力", "協定"],
     "world": ["國際", "外交", "地緣", "戰爭", "選舉", "聯合國", "氣候", "能源",
               "world", "global", "un", "衝突", "制裁"],
     "taiwan": ["台灣", "臺灣", "兩岸", "taiwan", "國內"],
@@ -115,14 +117,16 @@ def auto_configure(name, use_llm=True):
 
 
 def _clean_list(items, extra=None):
-    out = []
+    """去空白、去重（大小寫視為同一個，避免 AI / ai 重複佔位）。"""
+    out, seen = [], set()
     for x in (items or []):
         x = str(x).strip()
-        if x and x not in out:
+        if x and x.lower() not in seen:
+            seen.add(x.lower())
             out.append(x)
-    if extra and extra not in out:
+    if extra and extra.lower() not in seen:
         out.insert(0, extra)
-    return out[:12]
+    return out[:16]
 
 
 def _guess_groups(name):
@@ -132,13 +136,15 @@ def _guess_groups(name):
 
 
 def _fallback_config(name):
-    """無 LLM 時的規則式展開：主題名稱本身 + 分隔符斷詞 + 命中的領域詞。
+    """無 LLM 時的規則式展開。
 
-    中文沒有空白斷詞，所以額外掃描領域詞表，把出現在主題名稱裡的詞抽出來
-    （例如「半導體出口管制」會抽出「出口」），讓關鍵字不只有完整字串一個。
+    中文沒有空白斷詞，所以靠兩份詞表把主題名稱展開：
+    先掃 `keywords.LEXICON` 補上同義詞與英文對照（「半導體出口管制」會補上
+    晶片、晶圓、export control⋯），再掃 `_GROUP_HINTS` 抽出領域線索詞。
     """
     parts = [p for p in re.split(r"[\s、,，/／-]+", name) if len(p) >= 2]
     low = name.lower()
+    lex_zh, lex_en = expand_from_lexicon(name)
     for words in _GROUP_HINTS.values():
         for w in words:
             if len(w) >= 2 and w in low and w not in parts:
@@ -146,8 +152,8 @@ def _fallback_config(name):
     return {
         "emoji": "📌",
         "description": f"{name} 相關新聞與官方發布",
-        "keywords_zh": [name] + parts,
-        "keywords_en": [],
+        "keywords_zh": [name] + parts + lex_zh,
+        "keywords_en": lex_en,
         "queries_zh": [name],
         "queries_en": [],
         "groups": _guess_groups(name),
@@ -234,6 +240,54 @@ def ensure_topics():
     """第一次執行（或 topics.json 被清空）時，用內建主題建檔。"""
     if not store.load_topics():
         store.save_topics([get_builtin(t["id"]) for t in BUILTIN_TOPICS])
+
+
+def regenerate_keywords(topic_id, use_llm=True, replace=False):
+    """重新產生某個主題的關鍵字。
+
+    replace=False（預設）會與既有關鍵字合併，不會弄丟手動調整過的內容。
+    """
+    topic = get_topic_or_raise(topic_id)
+    cfg = auto_configure(topic["name"], use_llm=use_llm)
+    if replace:
+        zh, en = cfg["keywords_zh"], cfg["keywords_en"]
+    else:
+        zh = _merge(topic.get("keywords_zh"), cfg["keywords_zh"])
+        en = _merge(topic.get("keywords_en"), cfg["keywords_en"])
+    added = [k for k in zh + en
+             if k not in (topic.get("keywords_zh", []) + topic.get("keywords_en", []))]
+    update_topic(topic_id, keywords_zh=zh, keywords_en=en)
+    return added, cfg["auto_by"]
+
+
+def suggest_keywords(topic, days=None, limit=40):
+    """試抓一次這個主題的新聞，從實際內容統計出可以補上的關鍵字。
+
+    回傳 (中文候選, 英文候選, 抓到幾則)。
+    """
+    from . import collector  # 延後匯入避免循環相依
+    from .defaults import DEFAULT_DAYS
+
+    days = days or topic.get("days") or DEFAULT_DAYS
+    articles = collector.collect_topic(topic, days=days, limit=limit)
+    existing = (topic.get("keywords_zh") or []) + (topic.get("keywords_en") or [])
+    zh, en = suggest_from_articles(articles, existing=existing)
+    return zh, en, len(articles)
+
+
+def _merge(current, extra):
+    out = list(current or [])
+    for x in (extra or []):
+        if x not in out:
+            out.append(x)
+    return out[:24]
+
+
+def get_topic_or_raise(topic_id):
+    t = store.get_topic(topic_id)
+    if not t:
+        raise ValueError(f"找不到主題 {topic_id}")
+    return t
 
 
 def enabled_topics():

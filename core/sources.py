@@ -194,6 +194,54 @@ SOURCES = {
         "lang": "en",
         "note": "Federal Register 關稅相關法令公告（第一手法規原文）",
     },
+    # ── 官方報告與統計 ──────────────────────────────────────────
+    "gao": {
+        "name": "美國政府問責署 GAO",
+        "kind": "report",
+        "url": "https://www.gao.gov/rss/reports.xml",
+        "official": True,
+        "broad": True,
+        "lang": "en",
+        "note": "GAO 對美國政府政策的稽核與評估報告（含貿易、供應鏈、AI 治理）",
+    },
+    "cbo": {
+        "name": "美國國會預算辦公室 CBO",
+        "kind": "report",
+        "url": "https://www.cbo.gov/publications/all/rss.xml",
+        "official": True,
+        "broad": True,
+        "lang": "en",
+        "note": "CBO 法案成本估計與經濟預測報告",
+    },
+    "us_census_econ": {
+        "name": "美國普查局 經濟指標",
+        "kind": "report",
+        "url": "https://www.census.gov/economic-indicators/indicator.xml",
+        "official": True,
+        "broad": True,
+        "lang": "en",
+        "note": "美國官方經濟指標發布（含進出口貿易統計）",
+    },
+    # 註：歐洲央行的 https://www.ecb.europa.eu/rss/pub.html 實測三次有一次會
+    # 逾時（30 秒無回應），內容又偏學術，因此不納入。
+    "fed": {
+        "name": "美國聯準會 Fed",
+        "kind": "gov",
+        "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+        "official": True,
+        "broad": True,
+        "lang": "en",
+        "note": "聯準會全部新聞稿（貨幣政策、金融監理）",
+    },
+    "cier": {
+        "name": "中華經濟研究院",
+        "kind": "research",
+        "url": "https://www.cier.edu.tw/feed/",
+        "official": False,
+        "broad": True,
+        "lang": "zh",
+        "note": "中經院研究成果與經濟評論（政府智庫）",
+    },
     "cnyes_headline": {
         "name": "鉅亨網 頭條",
         "kind": "media",
@@ -338,9 +386,10 @@ SOURCES = {
 # 新增主題時，讓系統自動挑選來源用的分類索引
 SOURCE_GROUPS = {
     "ai": ["arxiv_ai", "arxiv_cl", "ec_digital", "nist", "oecd_ai", "openai",
-           "google_ai", "cna_tech", "technews", "cnyes_tw", "mit_tr_ai"],
+           "google_ai", "gao", "cna_tech", "technews", "cnyes_tw", "mit_tr_ai"],
     "trade": ["customs_news", "customs_law", "trade_policy", "trade_intl", "mof_news",
               "cbc", "wto", "ustr", "eu_trade", "fed_register_tariff",
+              "gao", "cbo", "us_census_econ", "fed", "cier",
               "cnyes_headline", "cnyes_tw", "moneydj", "udn_money", "udn_money_world",
               "nikkei_asia", "cna_finance"],
     "world": ["un_news", "ec_press", "cna_world", "bbc_world", "gnews_world",
@@ -354,6 +403,7 @@ SOURCE_GROUPS = {
 KIND_LABELS = {
     "gov": ("🏛️ 政府機關", "各國政府部會的官方發布與法規公告"),
     "intl": ("🌐 國際組織", "WTO、聯合國、OECD、歐盟執委會等跨國組織"),
+    "report": ("📄 官方報告與統計", "政府與國際組織的正式報告、評估與統計發布"),
     "research": ("🔬 研究機構", "學術預印本與研究單位發布"),
     "company": ("🏢 企業官方", "科技公司自己的官方公告"),
     "media": ("📰 新聞媒體", "財經、科技與國際新聞媒體"),
