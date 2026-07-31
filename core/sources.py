@@ -2,6 +2,7 @@
 """新聞來源目錄。
 
 每個來源都經過實測可正常解析（2026-07 驗證）。
+`kind` 是來源類別，用於「資料來源」頁分組與主題頁的來源篩選。
 `official=True` 代表政府機關、國際組織或發布方本身的第一手資料。
 `broad=True` 代表該 feed 內容龐雜，收錄時必須經過主題關鍵字過濾；
 `broad=False` 的來源本身就聚焦在該主題，最近期的項目全數收錄。
@@ -13,6 +14,7 @@ SOURCES = {
     # ── AI / 科技政策 ───────────────────────────────────────────
     "arxiv_ai": {
         "name": "arXiv cs.AI",
+        "kind": "research",
         "url": "https://rss.arxiv.org/rss/cs.AI",
         "official": True,
         "broad": True,
@@ -21,6 +23,7 @@ SOURCES = {
     },
     "arxiv_cl": {
         "name": "arXiv cs.CL",
+        "kind": "research",
         "url": "https://rss.arxiv.org/rss/cs.CL",
         "official": True,
         "broad": True,
@@ -29,6 +32,7 @@ SOURCES = {
     },
     "ec_digital": {
         "name": "歐盟執委會 數位政策",
+        "kind": "intl",
         "url": "https://digital-strategy.ec.europa.eu/en/rss.xml",
         "official": True,
         "broad": False,
@@ -37,6 +41,7 @@ SOURCES = {
     },
     "nist": {
         "name": "美國 NIST",
+        "kind": "gov",
         "url": "https://www.nist.gov/news-events/news/rss.xml",
         "official": True,
         "broad": True,
@@ -45,6 +50,7 @@ SOURCES = {
     },
     "oecd_ai": {
         "name": "OECD.AI 政策觀測站",
+        "kind": "intl",
         "url": "https://wp.oecd.ai/feed/",
         "official": True,
         "broad": False,
@@ -53,6 +59,7 @@ SOURCES = {
     },
     "openai": {
         "name": "OpenAI 官方公告",
+        "kind": "company",
         "url": "https://openai.com/news/rss.xml",
         "official": True,
         "broad": False,
@@ -61,6 +68,7 @@ SOURCES = {
     },
     "google_ai": {
         "name": "Google AI 官方部落格",
+        "kind": "company",
         "url": "https://blog.google/technology/ai/rss/",
         "official": True,
         "broad": False,
@@ -69,6 +77,7 @@ SOURCES = {
     },
     "cna_tech": {
         "name": "中央社 科技",
+        "kind": "media",
         "url": "https://feeds.feedburner.com/rsscna/technology",
         "official": False,
         "broad": True,
@@ -77,6 +86,7 @@ SOURCES = {
     },
     "technews": {
         "name": "科技新報 TechNews",
+        "kind": "media",
         "url": "https://technews.tw/feed/",
         "official": False,
         "broad": True,
@@ -85,6 +95,7 @@ SOURCES = {
     },
     "mit_tr_ai": {
         "name": "MIT Technology Review",
+        "kind": "media",
         "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
         "official": False,
         "broad": False,
@@ -95,6 +106,7 @@ SOURCES = {
     # ── 台灣國際貿易與關稅 ──────────────────────────────────────
     "customs_news": {
         "name": "財政部關務署 新聞",
+        "kind": "gov",
         "url": "https://web.customs.gov.tw/Rss/2222",
         "official": True,
         "broad": False,
@@ -103,6 +115,7 @@ SOURCES = {
     },
     "customs_law": {
         "name": "財政部關務署 法規預告",
+        "kind": "gov",
         "url": "https://web.customs.gov.tw/Rss/698",
         "official": True,
         "broad": False,
@@ -111,6 +124,7 @@ SOURCES = {
     },
     "trade_policy": {
         "name": "經濟部國際貿易署 新聞",
+        "kind": "gov",
         "url": "https://www.trade.gov.tw/RSS/List.aspx?nodeID=40",
         "official": True,
         "broad": False,
@@ -119,6 +133,7 @@ SOURCES = {
     },
     "trade_intl": {
         "name": "經濟部國際貿易署 國際經貿動態",
+        "kind": "gov",
         "url": "https://www.trade.gov.tw/RSS/List.aspx?nodeID=45",
         "official": True,
         "broad": False,
@@ -127,6 +142,7 @@ SOURCES = {
     },
     "mof_news": {
         "name": "財政部 新聞稿",
+        "kind": "gov",
         "url": "https://www.mof.gov.tw/Rss/384fb3077bb349ea973e7fc6f13b6974",
         "official": True,
         "broad": True,
@@ -135,6 +151,7 @@ SOURCES = {
     },
     "cbc": {
         "name": "中央銀行",
+        "kind": "gov",
         "url": "https://www.cbc.gov.tw/tw/rss-302-1.xml",
         "official": True,
         "broad": True,
@@ -143,6 +160,7 @@ SOURCES = {
     },
     "wto": {
         "name": "WTO 世界貿易組織",
+        "kind": "intl",
         "url": "https://www.wto.org/library/rss/latest_news_e.xml",
         "official": True,
         "broad": False,
@@ -151,6 +169,7 @@ SOURCES = {
     },
     "ustr": {
         "name": "USTR 美國貿易代表署",
+        "kind": "gov",
         "url": "https://ustr.gov/rss.xml",
         "official": True,
         "broad": True,
@@ -159,6 +178,7 @@ SOURCES = {
     },
     "eu_trade": {
         "name": "歐盟執委會 貿易總署",
+        "kind": "intl",
         "url": "https://policy.trade.ec.europa.eu/node/2/rss_en",
         "official": True,
         "broad": False,
@@ -167,6 +187,7 @@ SOURCES = {
     },
     "fed_register_tariff": {
         "name": "美國聯邦公報（關稅）",
+        "kind": "gov",
         "url": "https://www.federalregister.gov/api/v1/documents.rss?conditions%5Bterm%5D=tariff",
         "official": True,
         "broad": True,
@@ -175,6 +196,7 @@ SOURCES = {
     },
     "cnyes_headline": {
         "name": "鉅亨網 頭條",
+        "kind": "media",
         "url": "https://news.cnyes.com/rss/v1/news/category/headline",
         "official": False,
         "broad": True,
@@ -183,6 +205,7 @@ SOURCES = {
     },
     "cnyes_tw": {
         "name": "鉅亨網 台股產業",
+        "kind": "media",
         "url": "https://news.cnyes.com/rss/v1/news/category/tw_stock",
         "official": False,
         "broad": True,
@@ -191,6 +214,7 @@ SOURCES = {
     },
     "moneydj": {
         "name": "MoneyDJ 財經",
+        "kind": "media",
         "url": "https://www.moneydj.com/KMDJ/RssCenter.aspx?svc=NR&fno=1&arg=MB010000",
         "official": False,
         "broad": True,
@@ -199,6 +223,7 @@ SOURCES = {
     },
     "udn_money": {
         "name": "經濟日報 產業",
+        "kind": "media",
         "url": "https://money.udn.com/rssfeed/news/1001/5591?ch=money",
         "official": False,
         "broad": True,
@@ -207,6 +232,7 @@ SOURCES = {
     },
     "udn_money_world": {
         "name": "經濟日報 國際",
+        "kind": "media",
         "url": "https://money.udn.com/rssfeed/news/1001/5588?ch=money",
         "official": False,
         "broad": True,
@@ -215,6 +241,7 @@ SOURCES = {
     },
     "nikkei_asia": {
         "name": "Nikkei Asia",
+        "kind": "media",
         "url": "https://asia.nikkei.com/rss/feed/nar",
         "official": False,
         "broad": True,
@@ -223,6 +250,7 @@ SOURCES = {
     },
     "cna_finance": {
         "name": "中央社 財經",
+        "kind": "media",
         "url": "https://feeds.feedburner.com/rsscna/finance",
         "official": False,
         "broad": True,
@@ -233,6 +261,7 @@ SOURCES = {
     # ── 國際要聞 ────────────────────────────────────────────────
     "un_news": {
         "name": "聯合國新聞",
+        "kind": "intl",
         "url": "https://news.un.org/feed/subscribe/en/news/all/rss.xml",
         "official": True,
         "broad": False,
@@ -241,6 +270,7 @@ SOURCES = {
     },
     "cna_world": {
         "name": "中央社 國際焦點",
+        "kind": "media",
         "url": "https://feeds.feedburner.com/rsscna/intworld",
         "official": False,
         "broad": False,
@@ -249,6 +279,7 @@ SOURCES = {
     },
     "bbc_world": {
         "name": "BBC World News",
+        "kind": "media",
         "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
         "official": False,
         "broad": False,
@@ -257,6 +288,7 @@ SOURCES = {
     },
     "ec_press": {
         "name": "歐盟執委會 新聞室",
+        "kind": "intl",
         "url": "https://ec.europa.eu/commission/presscorner/api/rss?language=en&pagesize=20",
         "official": True,
         "broad": True,
@@ -265,6 +297,7 @@ SOURCES = {
     },
     "gnews_world": {
         "name": "Google 新聞 國際頭條",
+        "kind": "aggregator",
         "url": ("https://news.google.com/rss/headlines/section/topic/WORLD"
                 "?hl=zh-TW&gl=TW&ceid=TW:zh-Hant"),
         "official": False,
@@ -275,6 +308,7 @@ SOURCES = {
     },
     "dw_chinese": {
         "name": "德國之聲中文",
+        "kind": "media",
         "url": "https://rss.dw.com/rdf/rss-chi-all",
         "official": False,
         "broad": False,
@@ -283,6 +317,7 @@ SOURCES = {
     },
     "ltn_world": {
         "name": "自由時報 國際",
+        "kind": "media",
         "url": "https://news.ltn.com.tw/rss/world.xml",
         "official": False,
         "broad": False,
@@ -291,6 +326,7 @@ SOURCES = {
     },
     "pts_news": {
         "name": "公視新聞",
+        "kind": "media",
         "url": "https://news.pts.org.tw/xml/newsfeed.xml",
         "official": False,
         "broad": True,
@@ -312,6 +348,35 @@ SOURCE_GROUPS = {
     "taiwan": ["cna_world", "cna_finance", "cna_tech", "pts_news", "ltn_world",
                "cnyes_tw", "udn_money", "trade_intl", "mof_news", "cbc"],
 }
+
+
+# 來源類別 → (顯示名稱, 說明)，順序即為「資料來源」頁的呈現順序
+KIND_LABELS = {
+    "gov": ("🏛️ 政府機關", "各國政府部會的官方發布與法規公告"),
+    "intl": ("🌐 國際組織", "WTO、聯合國、OECD、歐盟執委會等跨國組織"),
+    "research": ("🔬 研究機構", "學術預印本與研究單位發布"),
+    "company": ("🏢 企業官方", "科技公司自己的官方公告"),
+    "media": ("📰 新聞媒體", "財經、科技與國際新聞媒體"),
+    "aggregator": ("🔎 新聞彙整", "搜尋引擎彙整，連結指向各家媒體原文"),
+}
+KIND_ORDER = list(KIND_LABELS)
+
+
+def kind_label(kind):
+    return KIND_LABELS.get(kind, ("📌 其他", ""))[0]
+
+
+def sources_by_kind():
+    """回傳 [(kind, 顯示名稱, 說明, [(sid, source), ...]), ...]。"""
+    buckets = {}
+    for sid, s in SOURCES.items():
+        buckets.setdefault(s.get("kind", "other"), []).append((sid, s))
+    out = []
+    for k in KIND_ORDER + [k for k in buckets if k not in KIND_ORDER]:
+        if k in buckets:
+            label, desc = KIND_LABELS.get(k, ("📌 其他", ""))
+            out.append((k, label, desc, buckets[k]))
+    return out
 
 
 def get_source(source_id):

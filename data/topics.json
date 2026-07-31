@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-01T00:37:56+08:00",
+  "updated_at": "2026-08-01T00:54:45+08:00",
   "topics": [
     {
       "id": "ai",
@@ -56,7 +56,8 @@
           "lang": "en"
         }
       ],
-      "auto_by": "builtin"
+      "auto_by": "builtin",
+      "category": "科技"
     },
     {
       "id": "trade",
@@ -135,7 +136,8 @@
           "lang": "en"
         }
       ],
-      "auto_by": "builtin"
+      "auto_by": "builtin",
+      "category": "經貿"
     },
     {
       "id": "world",
@@ -183,7 +185,8 @@
         "cnyes_headline"
       ],
       "news_queries": [],
-      "auto_by": "builtin"
+      "auto_by": "builtin",
+      "category": "國際"
     }
   ]
 }

@@ -92,7 +92,7 @@ def _norm_title(title):
     return re.sub(r"[^\w一-鿿]+", "", t).lower()
 
 
-def to_article(entry, source_name, official, topic_id, lang="zh", is_search=False):
+def to_article(entry, source_name, official, topic_id, lang="zh", is_search=False, kind="media"):
     url = entry.get("link", "").strip()
     title = clean_text(entry.get("title", ""))
     if not url or not title:
@@ -120,6 +120,7 @@ def to_article(entry, source_name, official, topic_id, lang="zh", is_search=Fals
         "source_name": real_source,
         "via": source_name,
         "official": bool(official),
+        "kind": kind,
         "published": dt.isoformat(timespec="seconds") if dt else None,
         "published_display": dt.strftime("%Y-%m-%d %H:%M") if dt else "時間未提供",
         "raw_summary": raw[:1500],
@@ -193,7 +194,8 @@ def collect_topic(topic, days=2, limit=25, include_search=True):
             query, lang = q.get("q"), q.get("lang", "zh")
             if query:
                 jobs.append(("search", query, google_news_url(query, lang, days=days),
-                             {"name": "Google 新聞彙整", "official": False, "lang": lang}))
+                             {"name": "Google 新聞彙整", "official": False,
+                              "lang": lang, "kind": "aggregator"}))
 
     def run(job):
         kind, key, url, meta = job
@@ -207,7 +209,8 @@ def collect_topic(topic, days=2, limit=25, include_search=True):
         items = []
         for e in entries[:120]:
             a = to_article(e, meta["name"], meta.get("official", False),
-                           topic["id"], meta.get("lang", "zh"), is_search=aggregator)
+                           topic["id"], meta.get("lang", "zh"), is_search=aggregator,
+                           kind=meta.get("kind", "aggregator" if is_search else "media"))
             if not a:
                 continue
             if not within_window(a, days):

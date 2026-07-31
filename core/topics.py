@@ -11,6 +11,8 @@ import re
 import urllib.parse
 
 from . import llm, store
+from .defaults import (BUILTIN_TOPICS, CATEGORY_ORDER, DEFAULT_CATEGORIES,
+                       GROUP_TO_CATEGORY, get_builtin)
 from .sources import SOURCES, SOURCE_GROUPS
 
 # 判斷主題屬性用的線索詞，供無 LLM 時的備援分類
@@ -60,6 +62,7 @@ _SYSTEM = """你是新聞監測系統的設定助理。使用者給你一個關�
 只回傳 JSON，格式如下：
 {
   "emoji": "單一 emoji",
+  "category": "從 科技 / 經貿 / 國際 / 台灣 中挑一個最貼切的類別",
   "description": "一句話說明這個主題涵蓋什麼（繁體中文，30 字內）",
   "keywords_zh": ["繁體中文關鍵字，6-10 個，要涵蓋同義詞與相關機構名稱"],
   "keywords_en": ["English keywords, 5-8 items"],
@@ -91,8 +94,13 @@ def auto_configure(name, use_llm=True):
     queries_zh = [q for q in cfg.get("queries_zh", []) if q] or [name]
     queries_en = [q for q in cfg.get("queries_en", []) if q]
 
+    category = cfg.get("category")
+    if category not in DEFAULT_CATEGORIES:
+        category = GROUP_TO_CATEGORY.get(groups[0], "自訂") if groups else "自訂"
+
     return {
         "emoji": (cfg.get("emoji") or "📌")[:2],
+        "category": category,
         "description": cfg.get("description") or f"{name} 相關新聞與官方發布",
         "keywords_zh": _clean_list(cfg.get("keywords_zh"), name),
         "keywords_en": _clean_list(cfg.get("keywords_en")),
@@ -147,11 +155,13 @@ def _fallback_config(name):
 
 
 # ── CRUD ────────────────────────────────────────────────────────
-def add_topic(name, use_llm=True, extra_sources=None):
+def add_topic(name, use_llm=True, extra_sources=None, category=None):
     topics = store.load_topics()
     if any(t["name"] == name.strip() for t in topics):
         raise ValueError(f"主題「{name}」已存在")
     cfg = auto_configure(name.strip(), use_llm=use_llm)
+    if category:
+        cfg["category"] = category.strip()
     if extra_sources:
         for sid in extra_sources:
             if sid in SOURCES and sid not in cfg["sources"]:
@@ -181,15 +191,73 @@ def update_topic(topic_id, **fields):
 
 
 def delete_topic(topic_id):
+    """刪除主題。內建主題也可以刪，之後能用 restore_builtins() 還原。"""
     topics = store.load_topics()
     target = next((t for t in topics if t["id"] == topic_id), None)
     if not target:
         raise ValueError(f"找不到主題 {topic_id}")
-    if target.get("builtin"):
-        raise ValueError("內建主題不可刪除，可改為停用")
     store.save_topics([t for t in topics if t["id"] != topic_id])
     return target
 
 
+def restore_builtins():
+    """把被刪掉的內建主題加回來（已存在的不動，不會覆蓋使用者的調整）。"""
+    topics = store.load_topics()
+    have = {t["id"] for t in topics}
+    restored = []
+    for bt in BUILTIN_TOPICS:
+        if bt["id"] not in have:
+            topics.append(get_builtin(bt["id"]))
+            restored.append(bt["name"])
+    if restored:
+        store.save_topics(topics)
+    return restored
+
+
+def reset_topic(topic_id):
+    """把單一內建主題還原成出廠設定（關鍵字、來源、查詢全部重設）。"""
+    original = get_builtin(topic_id)
+    if not original:
+        raise ValueError("只有內建主題可以還原出廠設定")
+    topics = store.load_topics()
+    for i, t in enumerate(topics):
+        if t["id"] == topic_id:
+            topics[i] = original
+            store.save_topics(topics)
+            return original
+    topics.append(original)
+    store.save_topics(topics)
+    return original
+
+
+def ensure_topics():
+    """第一次執行（或 topics.json 被清空）時，用內建主題建檔。"""
+    if not store.load_topics():
+        store.save_topics([get_builtin(t["id"]) for t in BUILTIN_TOPICS])
+
+
 def enabled_topics():
     return [t for t in store.load_topics() if t.get("enabled", True)]
+
+
+def category_of(topic):
+    return (topic.get("category") or "").strip() or "自訂"
+
+
+def all_categories():
+    """目前用到的類別 + 預設類別，依側欄排序回傳。"""
+    used = {category_of(t) for t in store.load_topics()}
+    ordered = [c for c in CATEGORY_ORDER if c in used or c in DEFAULT_CATEGORIES]
+    extra = sorted(used - set(ordered))
+    return ordered + extra
+
+
+def grouped_topics(only_enabled=True):
+    """回傳 [(類別, [主題, ...]), ...]，依側欄類別順序排列。"""
+    topics = enabled_topics() if only_enabled else store.load_topics()
+    buckets = {}
+    for t in topics:
+        buckets.setdefault(category_of(t), []).append(t)
+    known = [c for c in CATEGORY_ORDER if c in buckets]
+    rest = sorted(c for c in buckets if c not in CATEGORY_ORDER)
+    return [(c, buckets[c]) for c in known + rest]

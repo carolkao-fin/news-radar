@@ -11,6 +11,7 @@ import re
 import streamlit as st
 
 from core import llm, pipeline, store, topics as topics_mod, views
+from core.defaults import BUILTIN_TOPICS
 from core.sources import SOURCES
 
 st.set_page_config(page_title="每日新聞雷達", page_icon="📡", layout="centered")
@@ -30,7 +31,6 @@ def home():
     st.title("📡 每日新聞雷達")
     st.caption("AI ｜ 台灣國際貿易與關稅 ｜ 國際重大新聞 — 每日自動彙整，優先採用官方第一手資料")
 
-    all_topics = topics_mod.enabled_topics()
     snap, date_str = views.snapshot_selector(key="home")
     if not snap:
         views.no_data_hint()
@@ -46,19 +46,21 @@ def home():
     st.caption(f'最後更新：{snap.get("generated_at", "—")}')
     st.divider()
 
-    for t in all_topics:
-        arts = snap.get("topics", {}).get(t["id"], [])
-        brief = snap.get("meta", {}).get("briefs", {}).get(t["id"], "")
-        st.subheader(f'{t.get("emoji", "📌")} {t["name"]}　`{len(arts)} 則`')
-        if brief:
-            st.markdown(f"> {brief}")
-        if not arts:
-            st.caption("今日無資料。")
-        for a in arts[:3]:
-            views.render_article(a)
-        if len(arts) > 3:
-            st.caption(f"還有 {len(arts) - 3} 則 — 點左側「{t['name']}」看完整清單")
-        st.divider()
+    for category, items in topics_mod.grouped_topics():
+        st.markdown(f"### {category}")
+        for t in items:
+            arts = snap.get("topics", {}).get(t["id"], [])
+            brief = snap.get("meta", {}).get("briefs", {}).get(t["id"], "")
+            st.subheader(f'{t.get("emoji", "📌")} {t["name"]}　`{len(arts)} 則`')
+            if brief:
+                st.markdown(f"> {brief}")
+            if not arts:
+                st.caption("今日無資料。")
+            for a in arts[:3]:
+                views.render_article(a)
+            if len(arts) > 3:
+                st.caption(f"還有 {len(arts) - 3} 則 — 點左側「{t['name']}」看完整清單")
+            st.divider()
 
     _sidebar_status()
 
@@ -77,27 +79,44 @@ def manage_topics():
     st.title("➕ 主題管理")
     st.caption("輸入一個主題名稱，系統會自動展開搜尋關鍵字並挑選來源，之後每天自動追蹤。")
 
+    cats = topics_mod.all_categories()
     with st.form("add_topic"):
         name = st.text_input("新增主題", placeholder="例如：半導體出口管制、碳邊境稅 CBAM、東協經貿")
+        c1, c2 = st.columns(2)
+        with c1:
+            cat_choice = st.selectbox("歸到哪個類別", ["（讓系統自動判斷）"] + cats + ["＋ 新增類別"])
+        with c2:
+            new_cat = st.text_input("新類別名稱", placeholder="上方選「＋ 新增類別」時填寫")
         use_llm = st.checkbox("用 AI 自動產生關鍵字與來源設定", value=llm.available(),
                               disabled=not llm.available(),
                               help="未設定 GROQ_API_KEY 時會改用規則式展開")
         submitted = st.form_submit_button("建立主題", type="primary")
 
     if submitted:
-        if not name.strip():
+        category = None
+        if cat_choice == "＋ 新增類別":
+            category = new_cat.strip()
+            if not category:
+                st.error("選了「＋ 新增類別」就要填類別名稱。")
+                submitted = False
+        elif cat_choice != "（讓系統自動判斷）":
+            category = cat_choice
+
+        if submitted and not name.strip():
             st.error("請輸入主題名稱。")
-        else:
+        elif submitted:
             with st.spinner("正在產生搜尋設定…"):
                 try:
-                    t = topics_mod.add_topic(name, use_llm=use_llm)
+                    t = topics_mod.add_topic(name, use_llm=use_llm, category=category)
                 except ValueError as e:
                     st.error(str(e))
                     t = None
             if t:
                 how = "AI 自動產生" if t.get("auto_by") == "llm" else "規則式展開"
-                st.success(f'已建立「{t["name"]}」（{how}），重新整理後左側就會出現新頁面。')
+                st.success(f'已建立「{t["name"]}」（{how}），歸類到「{t["category"]}」，'
+                           f"左側該類別下會出現新頁面。")
                 st.json({
+                    "類別": t["category"],
                     "關鍵字（中）": t["keywords_zh"],
                     "關鍵字（英）": t["keywords_en"],
                     "搜尋查詢": t["news_queries"],
@@ -110,14 +129,35 @@ def manage_topics():
     st.subheader("現有主題")
     all_topics = store.load_topics()
     if not all_topics:
-        st.info("尚未有任何主題。")
+        st.info("目前沒有任何主題。")
+        if st.button("🔄 還原內建的三個主題", type="primary"):
+            topics_mod.restore_builtins()
+            st.rerun()
         return
+
+    missing = [b["name"] for b in BUILTIN_TOPICS
+               if b["id"] not in {t["id"] for t in all_topics}]
+    if missing:
+        st.info(f'已刪除的內建主題：{"、".join(missing)}')
+        if st.button("🔄 還原這些內建主題"):
+            restored = topics_mod.restore_builtins()
+            st.success(f'已還原：{"、".join(restored)}')
+            st.rerun()
 
     for t in all_topics:
         with st.expander(f'{t.get("emoji", "📌")} {t["name"]}'
+                         f'　`{topics_mod.category_of(t)}`'
                          f'{"（內建）" if t.get("builtin") else ""}'
                          f'{"" if t.get("enabled", True) else "　⏸ 已停用"}'):
             st.caption(t.get("description", ""))
+            cc1, cc2 = st.columns(2)
+            with cc1:
+                cur = topics_mod.category_of(t)
+                opts = cats + ([cur] if cur not in cats else []) + ["＋ 新增類別"]
+                pick = st.selectbox("類別", opts, index=opts.index(cur), key=f"cat_{t['id']}")
+            with cc2:
+                typed = st.text_input("新類別名稱", key=f"newcat_{t['id']}",
+                                      placeholder="左邊選「＋ 新增類別」時填寫")
             kz = st.text_area("中文關鍵字（逗號分隔）", ", ".join(t.get("keywords_zh", [])),
                               key=f"kz_{t['id']}", height=68)
             ke = st.text_area("英文關鍵字（逗號分隔）", ", ".join(t.get("keywords_en", [])),
@@ -142,14 +182,18 @@ def manage_topics():
                         continue
                     parts = [p.strip() for p in line.split("|")]
                     queries.append({"q": parts[0], "lang": parts[1] if len(parts) > 1 else "zh"})
-                topics_mod.update_topic(
-                    t["id"],
-                    keywords_zh=[x.strip() for x in kz.split(",") if x.strip()],
-                    keywords_en=[x.strip() for x in ke.split(",") if x.strip()],
-                    news_queries=queries, sources=picked, enabled=enabled,
-                )
-                st.success("已儲存")
-                st.rerun()
+                category = typed.strip() if pick == "＋ 新增類別" else pick
+                if not category:
+                    st.error("選了「＋ 新增類別」就要填類別名稱。")
+                else:
+                    topics_mod.update_topic(
+                        t["id"], category=category,
+                        keywords_zh=[x.strip() for x in kz.split(",") if x.strip()],
+                        keywords_en=[x.strip() for x in ke.split(",") if x.strip()],
+                        news_queries=queries, sources=picked, enabled=enabled,
+                    )
+                    st.success("已儲存")
+                    st.rerun()
 
             if c2.button("🔄 立即抓這個主題", key=f"run_{t['id']}"):
                 with st.spinner("抓取中…"):
@@ -162,10 +206,18 @@ def manage_topics():
                         store.save_news(snap["date"], snap["topics"], meta)
                 st.success(f"抓到 {len(arts)} 則，切換到該主題頁面即可查看。")
 
-            if not t.get("builtin"):
-                if c3.button("🗑 刪除", key=f"del_{t['id']}"):
-                    topics_mod.delete_topic(t["id"])
-                    st.rerun()
+            if t.get("builtin") and c3.button("↩️ 還原出廠設定", key=f"reset_{t['id']}"):
+                topics_mod.reset_topic(t["id"])
+                st.success("已還原成出廠設定")
+                st.rerun()
+
+            st.divider()
+            confirm = st.checkbox("我要刪除這個主題", key=f"cfm_{t['id']}")
+            if st.button("🗑 刪除主題", key=f"del_{t['id']}", disabled=not confirm):
+                topics_mod.delete_topic(t["id"])
+                st.rerun()
+            if t.get("builtin"):
+                st.caption("內建主題刪掉之後，可以在上方用「還原內建主題」加回來。")
 
     _backup_section(all_topics)
 
@@ -272,23 +324,27 @@ def sources_page():
 
 # ── 動態導覽 ────────────────────────────────────────────────────
 def build_nav():
+    """側邊欄：總覽 →（依類別分組的主題頁）→ 設定。"""
+    topics_mod.ensure_topics()
     pages = {
         "總覽": [st.Page(home, title="今日總覽", icon="📡", url_path="home", default=True)],
-        "主題頁面": [],
-        "設定": [
-            st.Page(manage_topics, title="主題管理", icon="➕", url_path="topics"),
-            st.Page(update_page, title="更新與設定", icon="⚙️", url_path="update"),
-            st.Page(sources_page, title="資料來源", icon="📚", url_path="sources"),
-        ],
     }
-    for t in topics_mod.enabled_topics():
-        fn = functools.partial(views.render_topic_page, t)
-        fn.__name__ = f'topic_{t["id"]}'
-        pages["主題頁面"].append(
-            st.Page(fn, title=t["name"], icon=t.get("emoji", "📌"), url_path=_url_path(t))
-        )
-    if not pages["主題頁面"]:
-        pages.pop("主題頁面")
+    for category, items in topics_mod.grouped_topics():
+        group = []
+        for t in items:
+            fn = functools.partial(views.render_topic_page, t)
+            fn.__name__ = f'topic_{t["id"]}'
+            group.append(
+                st.Page(fn, title=t["name"], icon=t.get("emoji", "📌"), url_path=_url_path(t))
+            )
+        if group:
+            # 用 extend 而非直接指派，萬一使用者把類別命名成「總覽」也不會蓋掉既有頁面
+            pages.setdefault(category, []).extend(group)
+    pages.setdefault("設定", []).extend([
+        st.Page(manage_topics, title="主題管理", icon="➕", url_path="topics"),
+        st.Page(update_page, title="更新與設定", icon="⚙️", url_path="update"),
+        st.Page(sources_page, title="資料來源", icon="📚", url_path="sources"),
+    ])
     return st.navigation(pages)
 
 

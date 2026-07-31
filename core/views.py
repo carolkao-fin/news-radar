@@ -3,7 +3,7 @@
 import streamlit as st
 
 from . import store
-from .sources import SOURCES
+from .sources import KIND_ORDER, SOURCES, kind_label, sources_by_kind
 
 CARD_CSS = """
 <style>
@@ -104,9 +104,18 @@ def render_topic_page(topic):
         kw = st.text_input("在本頁搜尋關鍵字", key=f"kw_{topic['id']}",
                            placeholder="例如：關稅、晶片、EU")
 
+    kinds_present = [k for k in KIND_ORDER if any(a.get("kind") == k for a in articles)]
+    picked_kinds = kinds_present
+    if len(kinds_present) > 1:
+        picked_kinds = st.multiselect(
+            "來源類別", kinds_present, default=kinds_present,
+            format_func=kind_label, key=f"kind_{topic['id']}")
+
     shown = articles
     if only_official:
         shown = [a for a in shown if a.get("official")]
+    if picked_kinds != kinds_present:
+        shown = [a for a in shown if a.get("kind") in picked_kinds]
     if kw.strip():
         k = kw.strip().lower()
         shown = [a for a in shown
@@ -127,19 +136,89 @@ def render_topic_page(topic):
 
 
 def render_source_catalog():
-    st.title("📚 資料來源清單")
+    st.title("📚 資料來源")
     st.caption("本站不採用維基百科等共筆百科；優先使用政府機關與國際組織的第一手發布。")
-    official = [(k, v) for k, v in SOURCES.items() if v["official"]]
-    media = [(k, v) for k, v in SOURCES.items() if not v["official"]]
 
-    st.subheader(f"✅ 官方／第一手來源（{len(official)}）")
-    for _, s in official:
-        st.markdown(f"**{s['name']}** — {s['note']}  \n`{s['url']}`")
-    st.subheader(f"📰 媒體來源（{len(media)}）")
-    for _, s in media:
-        st.markdown(f"**{s['name']}** — {s['note']}  \n`{s['url']}`")
+    all_topics = store.load_topics()
+    # 每個來源被哪些主題使用
+    used_by = {}
+    for t in all_topics:
+        for sid in t.get("sources", []):
+            used_by.setdefault(sid, []).append(t)
+
+    official_n = sum(1 for s in SOURCES.values() if s["official"])
+    c1, c2, c3 = st.columns(3)
+    c1.metric("來源總數", len(SOURCES))
+    c2.metric("官方／第一手", official_n)
+    c3.metric("媒體與彙整", len(SOURCES) - official_n)
+
+    with st.expander("🩺 檢查所有來源是否正常運作"):
+        st.caption("實際連線抓一次每個 RSS，確認來源還活著。約需 20～40 秒。")
+        if st.button("開始檢查", key="health_check"):
+            _run_health_check()
+
+    st.divider()
+
+    for kind, label, desc, items in sources_by_kind():
+        st.subheader(f"{label}（{len(items)}）")
+        if desc:
+            st.caption(desc)
+        for sid, s in items:
+            badge = ("✅ 官方" if s["official"] else "📰 媒體")
+            scope = "全數收錄" if not s.get("broad", True) else "需命中關鍵字"
+            topics_using = used_by.get(sid, [])
+            tag = "、".join(f'{t.get("emoji", "")}{t["name"]}' for t in topics_using) or "（目前沒有主題使用）"
+            with st.container(border=True):
+                st.markdown(f'**{s["name"]}**　`{badge}`　`{s.get("lang", "").upper()}`　`{scope}`')
+                st.caption(s["note"])
+                st.caption(f"使用中的主題：{tag}")
+                st.code(s["url"], language=None)
+        st.write("")
+
     st.divider()
     st.markdown(
-        "使用者自訂主題另外會使用 **Google 新聞 RSS** 做關鍵字搜尋，"
-        "它回傳的是各家新聞媒體的原始連結，不是百科內容。"
+        "#### 關於來源篩選\n"
+        "- **全數收錄**：該來源本身就聚焦在主題範圍內（例如 WTO、關務署），最近期的項目全部收進來。\n"
+        "- **需命中關鍵字**：內容龐雜的來源（例如 arXiv、聯邦公報、綜合財經媒體），"
+        "必須命中主題關鍵字才收錄，避免不相干的內容洗版。\n"
+        "- 使用者自訂主題另外會使用 **Google 新聞 RSS** 做關鍵字搜尋，"
+        "它回傳的是各家新聞媒體的原始連結，不是百科內容。\n"
+        "- 每則新聞都保留原始連結，摘要僅供快速瀏覽，引用請以原文為準。"
     )
+
+
+def _run_health_check():
+    """實際連線每個來源，回報可用狀態。"""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from . import collector
+
+    items = list(SOURCES.items())
+    bar = st.progress(0.0, text="檢查中…")
+    results = []
+
+    def probe(item):
+        sid, s = item
+        try:
+            entries = collector.fetch_feed(s["url"])
+            return sid, s["name"], len(entries)
+        except Exception:
+            return sid, s["name"], 0
+
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        for i, r in enumerate(ex.map(probe, items)):
+            results.append(r)
+            bar.progress((i + 1) / len(items), text=f"檢查中… {i + 1}/{len(items)}")
+    bar.empty()
+
+    dead = [r for r in results if r[2] == 0]
+    alive = [r for r in results if r[2] > 0]
+    if dead:
+        st.error(f"有 {len(dead)} 個來源抓不到內容，建議到主題管理頁把它們移除：")
+        for _, name, _ in dead:
+            st.markdown(f"- ❌ **{name}**")
+    else:
+        st.success(f"全部 {len(alive)} 個來源都正常。")
+    with st.expander(f"正常的來源（{len(alive)}）"):
+        for _, name, n in sorted(alive, key=lambda x: -x[2]):
+            st.markdown(f"- ✅ {name} — {n} 則")
