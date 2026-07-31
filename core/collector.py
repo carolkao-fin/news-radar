@@ -11,8 +11,16 @@ from datetime import datetime, timedelta, timezone
 import feedparser
 import requests
 from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
+from email.utils import parsedate_to_datetime
 
-from .sources import SOURCES
+try:  # feedparser 6 起把日期解析搬進子模組
+    from feedparser.datetimes import _parse_date as _fp_parse_date
+except ImportError:  # pragma: no cover - 舊版相容
+    def _fp_parse_date(_):
+        return None
+
+from .defaults import DEFAULT_DAYS
+from .source_registry import all_sources
 from .store import TW
 from .topics import google_news_url
 
@@ -70,16 +78,40 @@ def entry_datetime(entry):
                 return datetime.fromtimestamp(calendar.timegm(st), tz=timezone.utc).astimezone(TW)
             except (ValueError, OverflowError):
                 continue
-    # 少數 feed（如 Nikkei Asia）只給 dc:date 字串
+    # 少數 feed 只給無法直接解析的日期字串（Nikkei 的 dc:date、
+    # ETtoday 的 "Fri,31 Jul 2026 23:19:00  +0800" 逗號後少空格）
     for field in ("published", "updated", "dc_date", "date"):
         raw = entry.get(field)
         if isinstance(raw, str) and raw.strip():
-            st = feedparser._parse_date(raw)
-            if st:
-                try:
-                    return datetime.fromtimestamp(calendar.timegm(st), tz=timezone.utc).astimezone(TW)
-                except (ValueError, OverflowError):
-                    pass
+            dt = parse_date_string(raw)
+            if dt:
+                return dt
+    return None
+
+
+def parse_date_string(raw):
+    """盡力解析日期字串；解析不出來回傳 None。"""
+    candidates = [raw.strip()]
+    # 逗號後補空白、壓掉多餘空白，修正部分 feed 的格式瑕疵
+    fixed = re.sub(r"\s+", " ", re.sub(r",(?=\S)", ", ", raw)).strip()
+    if fixed != candidates[0]:
+        candidates.append(fixed)
+
+    for text in candidates:
+        st = _fp_parse_date(text)
+        if st:
+            try:
+                return datetime.fromtimestamp(calendar.timegm(st), tz=timezone.utc).astimezone(TW)
+            except (ValueError, OverflowError):
+                pass
+        try:
+            dt = parsedate_to_datetime(text)
+            if dt:
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt.astimezone(TW)
+        except (TypeError, ValueError):
+            pass
     return None
 
 
@@ -171,7 +203,7 @@ def dedupe(articles):
 
 
 # ── 主流程 ──────────────────────────────────────────────────────
-def collect_topic(topic, days=2, limit=25, include_search=True):
+def collect_topic(topic, days=DEFAULT_DAYS, limit=25, include_search=True):
     """抓取單一主題的新聞。
 
     days   : 只收最近幾天的內容
@@ -184,11 +216,14 @@ def collect_topic(topic, days=2, limit=25, include_search=True):
     strict = topic.get("require_keywords", False)
     jobs = []
 
+    catalog = all_sources()
     for sid in topic.get("sources", []):
-        src = SOURCES.get(sid)
+        src = catalog.get(sid)
         if src:
             jobs.append(("source", sid, src["url"], src))
 
+    # 主題可以設定「只用指定來源」，關掉 Google 新聞搜尋
+    include_search = include_search and topic.get("search_enabled", True)
     if include_search:
         for q in topic.get("news_queries", []):
             query, lang = q.get("q"), q.get("lang", "zh")
@@ -264,7 +299,7 @@ def _sort_time(a):
         return 0
 
 
-def collect_all(topics, days=2, limit=25, progress=None):
+def collect_all(topics, days=DEFAULT_DAYS, limit=25, progress=None):
     """依序抓取多個主題，回傳 {topic_id: [article]}。"""
     result = {}
     for i, t in enumerate(topics):

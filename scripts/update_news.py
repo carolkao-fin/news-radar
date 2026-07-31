@@ -15,11 +15,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.stdout.reconfigure(encoding="utf-8")
 
 from core import llm, pipeline, store, topics as topics_mod  # noqa: E402
+from core.defaults import DEFAULT_DAYS  # noqa: E402
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--days", type=int, default=2, help="收錄最近幾天的新聞")
+    ap.add_argument("--days", type=int, default=DEFAULT_DAYS,
+                    help=f"收錄最近幾天的新聞（預設 {DEFAULT_DAYS}；主題自己設定的天數優先）")
     ap.add_argument("--limit", type=int, default=20, help="每個主題最多保留幾則")
     ap.add_argument("--no-llm", action="store_true", help="停用 Groq 摘要")
     ap.add_argument("--topic", action="append", help="只更新指定主題 id（可重複）")
@@ -36,6 +38,8 @@ def main():
     use_llm = (not args.no_llm) and llm.available()
     print(f"日期：{store.today_str()}")
     print(f"摘要模式：{'Groq ' + llm.MODEL if use_llm else '擷取式（無 LLM）'}")
+    print(f"收錄天數：預設 {args.days} 天"
+          f"（{'、'.join(f'{t['name']} {pipeline.topic_days(t, args.days)} 天' for t in active)}）")
     print(f"主題：{'、'.join(t['name'] for t in active)}")
     print("-" * 60)
 

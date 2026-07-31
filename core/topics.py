@@ -13,7 +13,7 @@ import urllib.parse
 from . import llm, store
 from .defaults import (BUILTIN_TOPICS, CATEGORY_ORDER, DEFAULT_CATEGORIES,
                        GROUP_TO_CATEGORY, get_builtin)
-from .sources import SOURCES, SOURCE_GROUPS
+from .sources import SOURCE_GROUPS
 
 # 判斷主題屬性用的線索詞，供無 LLM 時的備援分類
 _GROUP_HINTS = {
@@ -164,7 +164,7 @@ def add_topic(name, use_llm=True, extra_sources=None, category=None):
         cfg["category"] = category.strip()
     if extra_sources:
         for sid in extra_sources:
-            if sid in SOURCES and sid not in cfg["sources"]:
+            if sid not in cfg["sources"]:
                 cfg["sources"].append(sid)
     topic = {
         "id": unique_id(name, {t["id"] for t in topics}),

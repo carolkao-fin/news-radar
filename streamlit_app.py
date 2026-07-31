@@ -10,9 +10,8 @@ import re
 
 import streamlit as st
 
-from core import llm, pipeline, store, topics as topics_mod, views
-from core.defaults import BUILTIN_TOPICS
-from core.sources import SOURCES
+from core import llm, pipeline, source_registry, store, topics as topics_mod, views
+from core.defaults import BUILTIN_TOPICS, DEFAULT_DAYS, MAX_DAYS
 
 st.set_page_config(page_title="每日新聞雷達", page_icon="📡", layout="centered")
 
@@ -120,7 +119,7 @@ def manage_topics():
                     "關鍵字（中）": t["keywords_zh"],
                     "關鍵字（英）": t["keywords_en"],
                     "搜尋查詢": t["news_queries"],
-                    "使用來源": [SOURCES[s]["name"] for s in t["sources"] if s in SOURCES],
+                    "使用來源": [source_registry.source_name(s) for s in t["sources"]],
                 })
                 if st.button("重新整理頁面"):
                     st.rerun()
@@ -166,11 +165,29 @@ def manage_topics():
                               "\n".join(f'{q["q"]} | {q.get("lang", "zh")}'
                                         for q in t.get("news_queries", [])),
                               key=f"q_{t['id']}", height=90)
+            catalog = source_registry.all_sources()
             picked = st.multiselect(
-                "指定 RSS 來源", options=list(SOURCES.keys()),
-                default=[s for s in t.get("sources", []) if s in SOURCES],
-                format_func=lambda s: f'{SOURCES[s]["name"]}{"（官方）" if SOURCES[s]["official"] else ""}',
-                key=f"src_{t['id']}")
+                "指定 RSS 來源（只會從這裡列出的來源抓取）",
+                options=list(catalog.keys()),
+                default=[s for s in t.get("sources", []) if s in catalog],
+                format_func=lambda s: (
+                    f'{catalog[s]["name"]}'
+                    f'{"（官方）" if catalog[s]["official"] else ""}'
+                    f'{"（自訂）" if catalog[s].get("custom") else ""}'),
+                key=f"src_{t['id']}",
+                help="要加入清單裡沒有的網站，到「📚 資料來源」頁新增自訂 RSS 來源。")
+
+            dc1, dc2 = st.columns(2)
+            with dc1:
+                days_val = st.number_input(
+                    "收錄最近幾天（0 = 用全域預設）", min_value=0, max_value=MAX_DAYS,
+                    value=int(t.get("days") or 0), step=1, key=f"days_{t['id']}",
+                    help=f"全域預設是 {DEFAULT_DAYS} 天。發布頻率低的主題可以設長一點。")
+            with dc2:
+                search_on = st.checkbox(
+                    "併用 Google 新聞搜尋", value=t.get("search_enabled", True),
+                    key=f"srch_{t['id']}",
+                    help="取消勾選就只會從上面指定的 RSS 來源抓取，完全不使用搜尋結果。")
             enabled = st.checkbox("啟用（會出現在側欄並納入每日更新）",
                                   value=t.get("enabled", True), key=f"en_{t['id']}")
 
@@ -191,13 +208,14 @@ def manage_topics():
                         keywords_zh=[x.strip() for x in kz.split(",") if x.strip()],
                         keywords_en=[x.strip() for x in ke.split(",") if x.strip()],
                         news_queries=queries, sources=picked, enabled=enabled,
+                        days=int(days_val) or None, search_enabled=search_on,
                     )
                     st.success("已儲存")
                     st.rerun()
 
             if c2.button("🔄 立即抓這個主題", key=f"run_{t['id']}"):
                 with st.spinner("抓取中…"):
-                    arts, brief = pipeline.update_topic(t, days=3, limit=20,
+                    arts, brief = pipeline.update_topic(t, limit=20,
                                                         use_llm=llm.available())
                     snap = store.merge_into_today(t["id"], arts)
                     if brief:
@@ -267,8 +285,10 @@ def update_page():
     picked = st.multiselect("要更新的主題", [t["id"] for t in active],
                             default=[t["id"] for t in active],
                             format_func=lambda i: next(t["name"] for t in active if t["id"] == i))
-    days = st.slider("收錄最近幾天的新聞", 1, 7, 2)
-    limit = st.slider("每個主題最多保留幾則", 5, 40, 20)
+    days = st.slider("收錄最近幾天的新聞", 1, MAX_DAYS, DEFAULT_DAYS,
+                     help="這是全域預設值；主題若自己設定了天數，會以主題的設定為準。"
+                          "官方機關發布頻率低，窗口拉長比較不會空頁。")
+    limit = st.slider("每個主題最多保留幾則", 5, 60, 20)
 
     if st.button("🚀 立即更新", type="primary", disabled=not picked):
         chosen = [t for t in active if t["id"] in picked]

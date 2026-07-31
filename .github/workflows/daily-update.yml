@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: "收錄最近幾天的新聞"
+        description: "收錄最近幾天的新聞（主題自己設定的天數優先）"
         required: false
-        default: "2"
+        default: "7"
 
 permissions:
   contents: write
@@ -31,7 +31,7 @@ jobs:
       - name: 抓取並摘要新聞
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python scripts/update_news.py --days ${{ github.event.inputs.days || '2' }}
+        run: python scripts/update_news.py --days ${{ github.event.inputs.days || '7' }}
 
       - name: 提交結果
         run: |

@@ -366,23 +366,5 @@ def kind_label(kind):
     return KIND_LABELS.get(kind, ("📌 其他", ""))[0]
 
 
-def sources_by_kind():
-    """回傳 [(kind, 顯示名稱, 說明, [(sid, source), ...]), ...]。"""
-    buckets = {}
-    for sid, s in SOURCES.items():
-        buckets.setdefault(s.get("kind", "other"), []).append((sid, s))
-    out = []
-    for k in KIND_ORDER + [k for k in buckets if k not in KIND_ORDER]:
-        if k in buckets:
-            label, desc = KIND_LABELS.get(k, ("📌 其他", ""))
-            out.append((k, label, desc, buckets[k]))
-    return out
-
-
-def get_source(source_id):
-    return SOURCES.get(source_id)
-
-
-def source_name(source_id):
-    s = SOURCES.get(source_id)
-    return s["name"] if s else source_id
+# 註：依類別分組、查詢單一來源等函式在 core/source_registry.py，
+# 那裡才會把使用者自訂的來源一起算進去。

@@ -2,8 +2,9 @@
 """Streamlit 共用畫面元件。"""
 import streamlit as st
 
-from . import store
-from .sources import KIND_ORDER, SOURCES, kind_label, sources_by_kind
+from . import source_registry, store
+from .source_registry import all_sources, sources_by_kind
+from .sources import KIND_ORDER, kind_label
 
 CARD_CSS = """
 <style>
@@ -140,17 +141,27 @@ def render_source_catalog():
     st.caption("本站不採用維基百科等共筆百科；優先使用政府機關與國際組織的第一手發布。")
 
     all_topics = store.load_topics()
+    catalog = all_sources()
     # 每個來源被哪些主題使用
     used_by = {}
     for t in all_topics:
         for sid in t.get("sources", []):
             used_by.setdefault(sid, []).append(t)
 
-    official_n = sum(1 for s in SOURCES.values() if s["official"])
+    official_n = sum(1 for s in catalog.values() if s["official"])
+    custom_n = sum(1 for s in catalog.values() if s.get("custom"))
     c1, c2, c3 = st.columns(3)
-    c1.metric("來源總數", len(SOURCES))
+    c1.metric("來源總數", len(catalog))
     c2.metric("官方／第一手", official_n)
-    c3.metric("媒體與彙整", len(SOURCES) - official_n)
+    c3.metric("自訂來源", custom_n)
+
+    with st.expander("➕ 新增自訂 RSS 來源"):
+        _add_source_form(all_topics)
+
+    custom = source_registry.load_custom()
+    if custom:
+        with st.expander(f"🙋 管理我的自訂來源（{len(custom)}）"):
+            _manage_custom_sources(custom, used_by)
 
     with st.expander("🩺 檢查所有來源是否正常運作"):
         st.caption("實際連線抓一次每個 RSS，確認來源還活著。約需 20～40 秒。")
@@ -166,10 +177,11 @@ def render_source_catalog():
         for sid, s in items:
             badge = ("✅ 官方" if s["official"] else "📰 媒體")
             scope = "全數收錄" if not s.get("broad", True) else "需命中關鍵字"
+            mine = "　`🙋 自訂`" if s.get("custom") else ""
             topics_using = used_by.get(sid, [])
             tag = "、".join(f'{t.get("emoji", "")}{t["name"]}' for t in topics_using) or "（目前沒有主題使用）"
             with st.container(border=True):
-                st.markdown(f'**{s["name"]}**　`{badge}`　`{s.get("lang", "").upper()}`　`{scope}`')
+                st.markdown(f'**{s["name"]}**　`{badge}`　`{s.get("lang", "").upper()}`　`{scope}`{mine}')
                 st.caption(s["note"])
                 st.caption(f"使用中的主題：{tag}")
                 st.code(s["url"], language=None)
@@ -187,13 +199,97 @@ def render_source_catalog():
     )
 
 
+def _add_source_form(all_topics):
+    st.caption(
+        "貼上任何網站的 RSS／Atom 網址就能加入。系統會先實際連線驗證，"
+        "抓不到內容不會加進來。常見位置：網站頁尾的 RSS 圖示，或網址後面加 `/feed`、`/rss`。"
+    )
+    with st.form("add_source"):
+        url = st.text_input("RSS 網址", placeholder="https://example.com/feed")
+        name = st.text_input("來源名稱", placeholder="例如：工商時報 產業版")
+        c1, c2 = st.columns(2)
+        with c1:
+            kind = st.selectbox("來源類別", KIND_ORDER, index=KIND_ORDER.index("media"),
+                                format_func=kind_label)
+        with c2:
+            official = st.checkbox("這是官方／第一手來源",
+                                   help="政府機關、國際組織或發布方自己的網站才勾選")
+        scope = st.radio(
+            "收錄方式",
+            ["需命中主題關鍵字", "最近期項目全數收錄"],
+            help="綜合型來源（例如整站新聞）選前者，避免不相干內容洗版；"
+                 "本身就聚焦在單一主題的來源才選後者。",
+        )
+        attach = st.multiselect(
+            "要加入哪些主題", [t["id"] for t in all_topics],
+            format_func=lambda i: next(
+                f'{t.get("emoji", "")}{t["name"]}' for t in all_topics if t["id"] == i),
+        )
+        note = st.text_input("說明（選填）", placeholder="這個來源提供什麼內容")
+        submitted = st.form_submit_button("驗證並新增", type="primary")
+
+    if not submitted:
+        return
+    if not url.strip() or not name.strip():
+        st.error("網址與名稱都要填。")
+        return
+
+    with st.spinner("正在連線驗證…"):
+        ok, msg, info = source_registry.probe_feed(url.strip())
+    if not ok:
+        st.error(msg)
+        return
+
+    try:
+        sid, src = source_registry.add_custom_source(
+            name=name, url=url, kind=kind, official=official,
+            broad=(scope == "需命中主題關鍵字"), lang=info.get("lang", "zh"), note=note,
+        )
+    except ValueError as e:
+        st.error(str(e))
+        return
+
+    st.success(f'✅ {msg}，已新增「{src["name"]}」（語言判定：{src["lang"].upper()}）')
+    st.caption("最新幾則標題：")
+    for t in info.get("sample", []):
+        st.markdown(f"- {t}")
+
+    if attach:
+        topics = store.load_topics()
+        for t in topics:
+            if t["id"] in attach and sid not in t.get("sources", []):
+                t.setdefault("sources", []).append(sid)
+        store.save_topics(topics)
+        names = [t["name"] for t in topics if t["id"] in attach]
+        st.success(f'已加入主題：{"、".join(names)}')
+    else:
+        st.info("尚未指定主題。到「主題管理」頁的來源清單勾選它，才會開始抓取。")
+
+
+def _manage_custom_sources(custom, used_by):
+    for sid, s in custom.items():
+        with st.container(border=True):
+            using = used_by.get(sid, [])
+            st.markdown(f'**{s["name"]}**　`{kind_label(s.get("kind", "media"))}`')
+            st.code(s["url"], language=None)
+            st.caption(f'使用中的主題：{"、".join(t["name"] for t in using) or "（無）"}')
+            c1, c2 = st.columns([1, 3])
+            with c1:
+                confirm = st.checkbox("確認刪除", key=f"cfmsrc_{sid}")
+            with c2:
+                if st.button("🗑 刪除這個來源", key=f"delsrc_{sid}", disabled=not confirm):
+                    source_registry.delete_custom_source(sid)
+                    st.success(f'已刪除「{s["name"]}」，並從所有主題中移除。')
+                    st.rerun()
+
+
 def _run_health_check():
     """實際連線每個來源，回報可用狀態。"""
     from concurrent.futures import ThreadPoolExecutor
 
     from . import collector
 
-    items = list(SOURCES.items())
+    items = list(all_sources().items())
     bar = st.progress(0.0, text="檢查中…")
     results = []
 
