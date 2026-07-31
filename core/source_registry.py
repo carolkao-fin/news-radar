@@ -12,6 +12,7 @@ from . import store
 from .sources import KIND_LABELS, KIND_ORDER, SOURCES
 
 CUSTOM_FILE = os.path.join(store.DATA_DIR, "sources.json")
+CUSTOM_REPO_PATH = "data/sources.json"
 CUSTOM_PREFIX = "custom_"
 
 
@@ -26,11 +27,20 @@ def load_custom():
         return {}
 
 
-def save_custom(custom):
+def custom_json(custom):
+    return json.dumps({"updated_at": store.now_iso(), "sources": custom},
+                      ensure_ascii=False, indent=2)
+
+
+def save_custom(custom, sync=True):
     os.makedirs(store.DATA_DIR, exist_ok=True)
+    text = custom_json(custom)
     with open(CUSTOM_FILE, "w", encoding="utf-8") as f:
-        json.dump({"updated_at": store.now_iso(), "sources": custom},
-                  f, ensure_ascii=False, indent=2)
+        f.write(text)
+    if sync:
+        # 同 topics.json，重新部署後容器會還原成 repo 版本，要回寫才留得住
+        from . import github_sync
+        github_sync.autosync(CUSTOM_REPO_PATH, text, "更新自訂 RSS 來源（來自網站）")
 
 
 def all_sources():

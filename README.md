@@ -125,10 +125,36 @@ GROQ_API_KEY = "gsk_xxx"
 若只是把某個內建主題的關鍵字改壞了，也可以按該主題的**還原出廠設定**。
 內建主題的出廠定義寫在 `core/defaults.py`，`data/topics.json` 只是「目前的狀態」。
 
-> ⚠️ **重要**：Streamlit Cloud 的檔案系統是暫時性的，服務重啟後會還原成 GitHub 上的版本。
-> 在網站上新增主題後，請到主題管理頁最下方**下載 `topics.json`**，
-> 覆蓋回 repo 的 `data/topics.json` 並 push，設定才會永久保留。
-> 在本機執行時則會直接寫入檔案，不受影響。
+### 讓新增的主題與類別撐過重新部署
+
+Streamlit Cloud 的檔案系統是暫時性的：**每次重新部署（包含每天排程 commit 新聞後的
+自動重新部署）容器都會還原成 GitHub 上的版本**，只寫在本機檔案的設定會消失。
+
+設定 GitHub Token 後，主題、類別、自訂 RSS 來源的每次修改都會自動 commit 回
+`data/topics.json` 與 `data/sources.json`，重新部署時拉到的就是最新設定。
+
+1. GitHub → Settings → Developer settings → Personal access tokens →
+   **Fine-grained tokens** → Generate new token
+2. Repository access 只選這個 repo；Permissions → Repository permissions →
+   **Contents 設為 Read and write**
+3. Streamlit Cloud → Manage app → Settings → **Secrets** 貼上：
+
+```toml
+GITHUB_TOKEN = "github_pat_..."
+GITHUB_REPO = "carolkao-fin/news-radar"   # 預設值，用自己的 repo 才要改
+GITHUB_BRANCH = "main"
+```
+
+到「➕ 主題管理」頁最下方的 **🔗 自動保存到 GitHub** 可以看到狀態、測試 Token，
+也能手動「立即推回」或「從 GitHub 取回」。內容沒有實際變動時不會產生 commit
+（存檔時間戳不算變動），避免無謂的重新部署。
+
+> Token 也可以直接貼在該頁面上先試用，但只在當下的瀏覽器分頁有效。
+> 完全不設 Token 時，改用同頁「💾 手動備份」下載 `topics.json` 覆蓋回 repo 並 push。
+> 在本機執行時檔案是實體的，不受影響。
+
+> ℹ️ 網站上按「立即更新」抓到的**新聞快照**同樣只存在容器裡（排程抓的不受影響）。
+> 想留住手動抓的結果，到「⚙️ 更新與設定 → 歷史資料」按「把快照推回 GitHub」。
 
 ---
 
@@ -168,6 +194,7 @@ news-radar/
 │   ├── store.py                # JSON 讀寫
 │   ├── pipeline.py             # 抓取＋摘要＋存檔的完整流程
 │   ├── report.py               # 區間快照 → Word（.docx）／JSON zip 匯出
+│   ├── github_sync.py          # 設定檔自動回寫 GitHub（撐過重新部署）
 │   └── views.py                # Streamlit 共用畫面元件
 ├── data/
 │   ├── topics.json             # 主題設定（目前狀態）

@@ -4,7 +4,8 @@
 設計理由：Streamlit Community Cloud 的檔案系統是暫時性的，重啟就會清空。
 因此「權威版本」的資料放在 GitHub repo 裡，由 GitHub Actions 每天更新並 commit；
 Streamlit 端只負責讀取。使用者在網站上新增的主題會先寫進本機檔案（當次容器有效），
-並可透過「主題管理」頁匯出 JSON 回存到 repo，或設定 GitHub Token 自動同步。
+並在設有 GitHub Token 時由 `github_sync` 自動回寫 repo（見主題管理頁「自動保存到
+GitHub」），這樣重新部署後設定才留得住；沒有 Token 時可改用手動匯出／匯入 JSON。
 """
 import json
 import os
@@ -39,11 +40,28 @@ def load_topics():
         return json.load(f).get("topics", [])
 
 
-def save_topics(topics):
+TOPICS_REPO_PATH = "data/topics.json"
+
+
+def topics_json(topics):
+    return json.dumps({"updated_at": now_iso(), "topics": topics},
+                      ensure_ascii=False, indent=2)
+
+
+def save_topics(topics, sync=True):
+    """寫入本機檔案，並在有設定 GitHub Token 時回寫 repo。
+
+    Streamlit Cloud 重新部署會把容器還原成 repo 版本，只寫本機檔案的話
+    使用者新增的主題與類別會消失，所以這裡順手同步回去。
+    """
     _ensure_dirs()
-    payload = {"updated_at": now_iso(), "topics": topics}
+    text = topics_json(topics)
     with open(TOPICS_FILE, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
+        f.write(text)
+    if sync:
+        from . import github_sync
+        github_sync.autosync(TOPICS_REPO_PATH, text,
+                             "更新主題設定（來自網站）")
 
 
 def get_topic(topic_id):
